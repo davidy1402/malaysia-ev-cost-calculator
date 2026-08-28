@@ -86,18 +86,18 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
 export const DEFAULT_USER_INPUTS: UserInputs = {
   modelName: 'Proton e.MAS 7',
   consumptionKwhPer100Km: 14.5,
-  monthlyMileageKm: 1500,
-  baselineHomeBillRm: 200,
-  fatherPetrolCostRm: 210,
+  monthlyMileageKm: 1477, // 对应爸爸每月 RM210 油费 @ RM1.99/L 的实际行驶里程
+  baselineHomeBillRm: 200, // 对应聊天记录中家里平均月电费 (RM 200 ~ 448 kWh)
+  fatherPetrolCostRm: 210, // 爸爸每月固定汽油支出 RM 210
 
-  // Advanced defaults based on 2026 Malaysia context
-  petrolPricePerLiter: 2.05, // RON 95 subsidized
-  petrolFuelEfficiencyKmPerL: 14.0, // Typical Perodua Myvi / Alza / Axia mixed driving ~7.1 L/100km
-  chargingEfficiency: 0.90, // 10% AC 7kW/11kW wallbox charging conversion & cooling loss
-  homeChargingRatio: 0.90, // 90% overnight at home, 10% public DC on highway/mall
-  publicDcPricePerKwh: 1.40, // Average Gentari / JomCharge / ChargeEV DC fast rate
-  afaRateSen: 3.80, // August 2026 Energy Commission AFA Surcharge (+3.80 sen / kWh)
-  isTouEnabled: false, // Time of Use (requires TNB Smart Meter)
-  touOffPeakRateSen: 28.00, // Off-peak discount rate
+  // Updated based on user specification
+  petrolPricePerLiter: 1.99, // 设定基准油价 RM 1.99 / L
+  petrolFuelEfficiencyKmPerL: 14.0, // 典型油车油耗 ~7.1 L/100km (Myvi/Alza/Axia)
+  chargingEfficiency: 0.90, // 10% AC 充电转换与线损
+  homeChargingRatio: 0.90, // 90% 家充 / 10% 外出商用 DC 快充
+  publicDcPricePerKwh: 1.40, // 商业快充均价 RM 1.40/kWh
+  afaRateSen: 3.80, // TNB AFA 燃油附加费 +3.80 sen/kWh
+  isTouEnabled: false, // Time of Use
+  touOffPeakRateSen: 28.00, // ToU 离峰费率
   batteryCapacityKwh: 60.22,
 };
