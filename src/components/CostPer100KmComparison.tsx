@@ -13,7 +13,7 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
   result
 }) => {
   const fullBatteryKwh = inputs.batteryCapacityKwh || 60;
-  const fullChargeCostHome = (fullBatteryKwh * 0.90 / inputs.chargingEfficiency) * (result.newCombinedBill.effectiveRatePerKwh);
+  const fullChargeCostHome = result.singleFullChargeMarginalCost;
 
   const trips = [
     {

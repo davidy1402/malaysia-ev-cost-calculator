@@ -5,22 +5,37 @@ export interface SavedVehicle {
   savedAt: number;
 }
 
+export interface VehiclePreset {
+  id: string;
+  name: string;
+  brand: string;
+  consumptionKwhPer100Km: number;
+  batteryCapacityKwh: number;
+  claimedRangeWltpKm: number;
+  priceEstimateRm: string;
+  tag?: string;
+}
+
 export interface UserInputs {
   modelName: string;
   consumptionKwhPer100Km: number;
   monthlyMileageKm: number;
-  baselineHomeBillRm: number;
-  fatherPetrolCostRm: number;
-  
-  // Advanced parameters
-  petrolPricePerLiter: number;
-  petrolFuelEfficiencyKmPerL: number;
-  chargingEfficiency: number; // e.g. 0.90 for 10% AC charging loss
-  homeChargingRatio: number; // e.g. 0.90 for 90% home, 10% public DC
+  baselineHomeKwh: number; // 默认 501 kWh（David 家最新 TNB 真实账单）
+  baselineHomeBillRm: number; // 对应计算出的账单金额（如 RM 172.70）
+  fatherPetrolCostRm: number; // 爸爸每月固定油费 RM 210
+
+  // 充电模式切换: 'mixed' (90%家充+10%外充) vs 'home_only' (100%全家充)
+  chargingMode: 'mixed' | 'home_only';
+
+  // 核心参数
+  petrolPricePerLiter: number; // RM 1.99 / L
+  petrolFuelEfficiencyKmPerL: number; // 14.0 km/L (~7.14 L/100km)
+  chargingEfficiency: number; // 0.90 (10% AC 充电与线损)
+  homeChargingRatio: number; // 0.90 for mixed, 1.0 for home_only
   publicDcPricePerKwh: number; // RM 1.40 / kWh
-  afaRateSen: number; // e.g. 3.80 sen / kWh
-  isTouEnabled: boolean; // Time of Use off-peak charging
-  touOffPeakRateSen: number; // e.g. 28.00 sen / kWh
+  afaRateSen: number; // 3.80 sen / kWh
+  isTouEnabled: boolean; // Time of Use
+  touOffPeakRateSen: number; // 28.00 sen / kWh
   batteryCapacityKwh: number;
 }
 
@@ -30,12 +45,15 @@ export interface TnbBillBreakdown {
   baseCapacity: number;
   baseNetwork: number;
   baseEnergySubtotal: number;
+  eeiRebateSen: number; // sen/kWh rebate
+  eeiRebateAmount: number; // RM
+  netBaseEnergy: number; // Base - EEI
   retailCharge: number;
   isRetailChargeWaived: boolean;
   afaSurcharge: number;
   isAfaWaived: boolean;
-  kwtbbFund: number; // 1.6% above 300 kWh
-  sstTax: number; // 8% above 600 kWh
+  kwtbbFund: number; // 1.6% (if kWh > 300)
+  sstTax: number; // 8% (on units > 600 kWh)
   totalAmount: number;
   isOver600Threshold: boolean;
   isOver1500Threshold: boolean;
@@ -45,10 +63,10 @@ export interface TnbBillBreakdown {
 export interface EvCalculationResult {
   // Energy consumption
   monthlyDistanceKm: number;
-  evMonthlyNetKwh: number; // at wheels/battery
-  evMonthlyGrossKwh: number; // from wall including charging loss
-  evHomeChargingKwh: number;
-  evPublicChargingKwh: number;
+  evMonthlyNetKwh: number; // 车端标称消耗 (kWh)
+  evMonthlyGrossKwh: number; // 电网端实际消耗含 10% 损耗 (kWh)
+  evHomeChargingKwh: number; // 家充消耗 (kWh)
+  evPublicChargingKwh: number; // 外充消耗 (kWh)
 
   // Bill breakdowns
   baselineBill: TnbBillBreakdown;
@@ -56,6 +74,12 @@ export interface EvCalculationResult {
   marginalHomeElectricityCost: number; // newCombinedBill.total - baselineBill.total
   publicChargingCost: number;
   totalEvChargingCost: number; // marginalHomeElectricityCost + publicChargingCost
+
+  // True Marginal electricity rate per kWh for EV
+  marginalEffectiveRatePerKwh: number;
+
+  // Single full charge cost based on marginal rate
+  singleFullChargeMarginalCost: number;
 
   // Petrol comparison
   petrolEquivalentDistanceKm: number;
@@ -75,5 +99,5 @@ export interface EvCalculationResult {
 
   // Threshold alerts
   crossed600Threshold: boolean;
-  thresholdJumpPenaltyRm: number; // additional cost caused solely by losing 600kWh waiver
+  thresholdJumpPenaltyRm: number; // additional cost caused by losing 600kWh waiver
 }

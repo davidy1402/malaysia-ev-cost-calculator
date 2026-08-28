@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Fuel, Home, Gauge, Check, BookmarkPlus, X } from 'lucide-react';
+import { Fuel, Home, Gauge, Check, BookmarkPlus, X, BatteryCharging } from 'lucide-react';
 import { UserInputs, EvCalculationResult } from '../types/calculator';
+import { formatRm } from '../utils/formatter';
 
 interface SavedVehicle {
   id: string;
@@ -37,11 +38,11 @@ interface ShowroomInputCardProps {
   onChange: (patch: Partial<UserInputs>) => void;
 }
 
-const tileLabel = 'flex items-center gap-2 text-xs font-semibold text-ink';
+const tileLabel = 'flex items-center gap-2 text-xs font-semibold text-zinc-300';
 const iconChip = 'flex h-6 w-6 items-center justify-center rounded-md';
 const numInput =
-  'w-full rounded-xl border border-line bg-inset px-3 py-2.5 text-sm font-semibold text-ink ' +
-  'placeholder:text-faint transition-colors focus:border-brand focus:bg-surface focus:outline-none focus:ring-2 focus:ring-brand/15';
+  'w-full rounded-xl border border-zinc-800 bg-zinc-950/90 px-3 py-2.5 text-sm font-semibold text-zinc-100 ' +
+  'placeholder:text-zinc-600 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20';
 
 export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
   inputs,
@@ -83,19 +84,28 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
   };
 
   return (
-    <div className="card space-y-5 p-4 sm:p-6">
-      {/* Showroom Main Target: Energy Consumption */}
-      <div className="rounded-2xl border border-brand/25 bg-brand-soft/60 p-4 sm:p-5">
-        <div>
-          <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">
-            第一步：输入销售告诉你的电耗
-          </span>
-          <h4 className="mt-0.5 text-sm font-semibold text-ink">
-            百公里电耗 (kWh / 100km)
-          </h4>
+    <div className="space-y-4 rounded-3xl border border-zinc-800/80 bg-zinc-900/60 p-4 shadow-xl backdrop-blur-sm sm:p-6">
+      {/* 1. Showroom Target Input: Energy Consumption */}
+      <div className="rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+              第 1 步：问销售的电耗
+            </span>
+            <h3 className="mt-0.5 text-sm font-semibold text-zinc-100 sm:text-base">
+              百公里电耗 (kWh / 100km)
+            </h3>
+          </div>
+
+          <div className="text-right">
+            <span className="text-[11px] text-zinc-400">含 10% 家充损耗后 ≈ </span>
+            <strong className="font-mono text-xs text-emerald-300">
+              {(inputs.consumptionKwhPer100Km / inputs.chargingEfficiency).toFixed(1)} kWh/100km
+            </strong>
+          </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-3 flex items-center gap-3">
           <div className="relative flex-1">
             <input
               type="number"
@@ -109,9 +119,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 onChange({ consumptionKwhPer100Km: isNaN(val) ? 0 : val });
               }}
               placeholder="14.5"
-              className="font-display w-full rounded-2xl border border-brand/30 bg-surface px-4 py-3 pr-28 text-[32px] font-semibold leading-none tracking-tight text-brand placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 sm:text-[36px]"
+              className="w-full rounded-2xl border border-emerald-500/40 bg-zinc-950/90 px-4 py-3 pr-28 text-3xl font-bold font-mono text-emerald-400 placeholder:text-zinc-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 sm:text-4xl"
             />
-            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted">
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-zinc-400">
               kWh / 100 km
             </span>
           </div>
@@ -121,122 +131,150 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             <button
               type="button"
               onClick={() => onChange({ consumptionKwhPer100Km: Math.round((inputs.consumptionKwhPer100Km + 0.5) * 10) / 10 })}
-              className="flex h-8 w-12 items-center justify-center rounded-full border border-line bg-surface text-xs font-semibold text-ink shadow-card transition-all hover:border-line-strong active:scale-95"
+              className="flex h-8 w-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-bold text-zinc-100 hover:bg-zinc-700 active:scale-95 transition-all"
             >
               +0.5
             </button>
             <button
               type="button"
               onClick={() => onChange({ consumptionKwhPer100Km: Math.max(5, Math.round((inputs.consumptionKwhPer100Km - 0.5) * 10) / 10) })}
-              className="flex h-8 w-12 items-center justify-center rounded-full border border-line bg-surface text-xs font-semibold text-ink shadow-card transition-all hover:border-line-strong active:scale-95"
+              className="flex h-8 w-12 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 text-xs font-bold text-zinc-100 hover:bg-zinc-700 active:scale-95 transition-all"
             >
               −0.5
             </button>
           </div>
         </div>
 
-        {/* Model name + save */}
-        <div className="mt-4 flex items-center gap-2">
+        {/* Model name + quick save */}
+        <div className="mt-3 flex items-center gap-2">
           <input
             type="text"
             value={inputs.modelName}
             onChange={(e) => onChange({ modelName: e.target.value })}
-            placeholder="这是哪台车？（选填，如 Atto 3）"
+            placeholder="车型名称（如 Proton e.MAS 7）"
             maxLength={40}
-            className="min-w-0 flex-1 rounded-xl border border-brand/25 bg-surface px-3 py-2 text-sm font-medium text-ink placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15"
+            className="min-w-0 flex-1 rounded-xl border border-zinc-700/80 bg-zinc-950/80 px-3 py-2 text-xs font-medium text-zinc-200 placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
           />
           <button
             type="button"
             onClick={handleSaveVehicle}
             disabled={!canSave}
-            className={`flex h-[38px] shrink-0 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold transition-all active:scale-95 ${
+            className={`flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold transition-all active:scale-95 ${
               justSaved
-                ? 'bg-brand text-onbrand'
+                ? 'bg-emerald-500 text-zinc-950'
                 : canSave
-                  ? 'border border-brand/40 bg-surface text-brand hover:bg-brand-soft'
-                  : 'cursor-not-allowed border border-line bg-surface text-faint'
+                  ? 'border border-emerald-500/40 bg-zinc-900 text-emerald-400 hover:bg-emerald-950/40'
+                  : 'cursor-not-allowed border border-zinc-800 bg-zinc-950 text-zinc-600'
             }`}
-            title="记住这台车的名字和能耗，下次一点就带回"
           >
             {justSaved ? (
               <>
-                <Check size={14} strokeWidth={1.75} />
+                <Check size={14} strokeWidth={2} />
                 已记住
               </>
             ) : (
               <>
                 <BookmarkPlus size={14} strokeWidth={1.75} />
-                记住
+                记住这辆车
               </>
             )}
           </button>
         </div>
 
-        {/* Saved vehicles history chips */}
+        {/* Saved vehicles chips */}
         {savedVehicles.length > 0 && (
-          <div className="mt-3">
-            <div className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted">
-              试驾过的车 · 点一下带回来
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {savedVehicles.map((v) => {
-                const isActive = inputs.modelName.trim().toLowerCase() === v.name.toLowerCase();
-                return (
-                  <span
-                    key={v.id}
-                    className={`group flex items-center gap-1 rounded-full border py-1 pl-2.5 pr-1.5 text-[11px] font-medium transition-colors ${
-                      isActive
-                        ? 'border-brand bg-brand text-onbrand'
-                        : 'border-line bg-surface text-ink hover:border-brand/40'
-                    }`}
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {savedVehicles.map((v) => {
+              const isActive = inputs.modelName.trim().toLowerCase() === v.name.toLowerCase();
+              return (
+                <span
+                  key={v.id}
+                  className={`flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors ${
+                    isActive
+                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
+                      : 'border-zinc-800 bg-zinc-950 text-zinc-300 hover:border-zinc-700'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        modelName: v.name,
+                        consumptionKwhPer100Km: v.consumptionKwhPer100Km
+                      })
+                    }
+                    className="flex items-center gap-1"
                   >
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onChange({
-                          modelName: v.name,
-                          consumptionKwhPer100Km: v.consumptionKwhPer100Km
-                        })
-                      }
-                      className="flex items-center gap-1.5"
-                    >
-                      <span>{v.name}</span>
-                      <span className={isActive ? 'text-onbrand/75' : 'text-faint'}>
-                        {v.consumptionKwhPer100Km}
-                      </span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteVehicle(v.id)}
-                      aria-label={`删除 ${v.name}`}
-                      className={`flex h-4 w-4 items-center justify-center rounded-full transition-colors ${
-                        isActive
-                          ? 'text-onbrand/70 hover:bg-white/20 hover:text-onbrand'
-                          : 'text-faint hover:bg-warn-soft hover:text-warn'
-                      }`}
-                    >
-                      <X size={11} strokeWidth={2} />
-                    </button>
-                  </span>
-                );
-              })}
-            </div>
+                    <span>{v.name}</span>
+                    <span className="font-mono text-zinc-400">({v.consumptionKwhPer100Km})</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteVehicle(v.id)}
+                    className="text-zinc-500 hover:text-red-400 ml-0.5"
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* Grid of Inputs: Mileage, Home Bill, Father's Petrol */}
+      {/* 2. Charging Mode Toggle (Requested: Mixed vs 100% Home) */}
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-3 sm:p-4">
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
+            <BatteryCharging size={15} className="text-emerald-400" />
+            <span>充电场景模式</span>
+          </label>
+          <span className="text-[11px] text-zinc-400">
+            {inputs.chargingMode === 'mixed' ? '平时家充 (90%) + 出行偶尔快充 (10%)' : '纯家充 (100% 在家充)'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ chargingMode: 'mixed', homeChargingRatio: 0.90 })}
+            className={`flex flex-col items-center justify-center rounded-xl p-2.5 text-xs font-medium transition-all ${
+              inputs.chargingMode === 'mixed'
+                ? 'border border-emerald-500 bg-emerald-950/40 text-emerald-300 shadow-md ring-1 ring-emerald-500/20'
+                : 'border border-zinc-800 bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+            }`}
+          >
+            <span className="font-semibold text-sm">🔌 90% 家充 + 10% 外充</span>
+            <span className="text-[10px] text-zinc-400 mt-0.5">最贴近真实用车（含长途快充）</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onChange({ chargingMode: 'home_only', homeChargingRatio: 1.0 })}
+            className={`flex flex-col items-center justify-center rounded-xl p-2.5 text-xs font-medium transition-all ${
+              inputs.chargingMode === 'home_only'
+                ? 'border border-emerald-500 bg-emerald-950/40 text-emerald-300 shadow-md ring-1 ring-emerald-500/20'
+                : 'border border-zinc-800 bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+            }`}
+          >
+            <span className="font-semibold text-sm">🏠 100% 全在家里充</span>
+            <span className="text-[10px] text-zinc-400 mt-0.5">零商业快充支出，省钱最大化</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 3. Grid of Baseline Inputs: Mileage, Real Household TNB Bill, Father's Petrol */}
       <div className="grid gap-3 sm:grid-cols-3">
         {/* 1. Monthly Mileage */}
-        <div className="space-y-2 rounded-2xl border border-line bg-inset/50 p-3.5">
+        <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
           <div className="flex items-center justify-between">
             <label className={tileLabel}>
-              <span className={`${iconChip} bg-brand-soft text-brand`}>
-                <Gauge size={13} strokeWidth={1.75} />
+              <span className={`${iconChip} bg-emerald-500/10 text-emerald-400`}>
+                <Gauge size={14} />
               </span>
-              <span>每月大概开</span>
+              <span>每月开多少公里</span>
             </label>
-            <span className="text-[11px] font-semibold text-brand">
+            <span className="font-mono text-xs font-bold text-emerald-400">
               {inputs.monthlyMileageKm.toLocaleString()} km
             </span>
           </div>
@@ -253,21 +291,19 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 const val = parseInt(e.target.value, 10);
                 onChange({ monthlyMileageKm: isNaN(val) ? 0 : val });
               }}
-              placeholder="1500"
-              className={`${numInput} pr-14`}
+              placeholder="1477"
+              className={numInput}
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-faint">
-              km / 月
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+              km
             </span>
           </div>
 
-          {/* Quick chips */}
-          <div className="flex flex-wrap gap-1 pt-1">
+          <div className="flex flex-wrap gap-1 pt-0.5">
             <button
               type="button"
               onClick={() => onChange({ monthlyMileageKm: result.petrolEquivalentDistanceKm })}
-              title="根据每月RM210油费推算的月行驶里程"
-              className="rounded px-2 py-0.5 text-[10px] font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30"
+              className="rounded px-2 py-0.5 text-[10px] font-medium bg-emerald-950/50 text-emerald-300 border border-emerald-500/30"
             >
               对齐爸爸油费 ({result.petrolEquivalentDistanceKm}km)
             </button>
@@ -288,52 +324,58 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           </div>
         </div>
 
-        {/* 2. Current Baseline Home Electricity Bill */}
-        <div className="space-y-2 rounded-2xl border border-line bg-inset/50 p-3.5">
+        {/* 2. Real Household Baseline Bill (Anchored on David's 501 kWh real bill) */}
+        <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300">
-              <Home size={16} strokeWidth={1.75} className="text-blue-400" />
-              <span>家里平均电费</span>
+            <label className={tileLabel}>
+              <span className={`${iconChip} bg-blue-500/10 text-blue-400`}>
+                <Home size={14} />
+              </span>
+              <span>家里现在用电</span>
             </label>
-            <span className="text-[11px] font-semibold text-grid">
-              ≈ {result.baselineBill.kwh} 度
+            <span className="font-mono text-xs font-bold text-blue-400">
+              {formatRm(result.baselineBill.totalAmount)}
             </span>
           </div>
 
           <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-faint">
-              RM
-            </span>
             <input
               type="number"
               step="10"
               min="0"
-              max="5000"
-              inputMode="decimal"
-              value={inputs.baselineHomeBillRm || ''}
+              max="3000"
+              inputMode="numeric"
+              value={inputs.baselineHomeKwh || ''}
               onChange={(e) => {
                 const val = parseFloat(e.target.value);
-                onChange({ baselineHomeBillRm: isNaN(val) ? 0 : val });
+                const kwh = isNaN(val) ? 0 : val;
+                onChange({
+                  baselineHomeKwh: kwh,
+                  baselineHomeBillRm: result.baselineBill.totalAmount
+                });
               }}
-              placeholder="200"
-              className={`${numInput} pl-9`}
+              placeholder="501"
+              className={numInput}
             />
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">
+              度 (kWh)
+            </span>
           </div>
 
-          {/* Quick Home Bill Presets */}
-          <div className="flex flex-wrap gap-1 pt-1">
+          {/* Quick Real Bill Presets */}
+          <div className="flex flex-wrap gap-1 pt-0.5">
             {[
-              { label: 'RM 200 (常态~448度)', rm: 200 },
-              { label: 'RM 250 (峰值~525度)', rm: 250 },
-              { label: 'RM 180 (省电~400度)', rm: 180 }
+              { label: '501度 (最新账单 RM173)', kwh: 501 },
+              { label: '430度 (半年均值 RM131)', kwh: 430 },
+              { label: '390度 (省电月 RM117)', kwh: 390 }
             ].map((b) => (
               <button
-                key={b.rm}
+                key={b.kwh}
                 type="button"
-                onClick={() => onChange({ baselineHomeBillRm: b.rm })}
+                onClick={() => onChange({ baselineHomeKwh: b.kwh })}
                 className={`rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors ${
-                  inputs.baselineHomeBillRm === b.rm
-                    ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                  inputs.baselineHomeKwh === b.kwh
+                    ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
                     : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
                 }`}
               >
@@ -343,29 +385,29 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           </div>
         </div>
 
-        {/* 3. Father's Current Petrol Cost */}
-        <div className="space-y-2 rounded-2xl border border-line bg-inset/50 p-3.5">
+        {/* 3. Father's Petrol Cost */}
+        <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
           <div className="flex items-center justify-between">
             <label className={tileLabel}>
-              <span className={`${iconChip} bg-oil-soft text-oil`}>
-                <Fuel size={13} strokeWidth={1.75} />
+              <span className={`${iconChip} bg-amber-500/10 text-amber-400`}>
+                <Fuel size={14} />
               </span>
-              <span>每月汽油开销</span>
+              <span>爸爸现在的油钱</span>
             </label>
-            <span className="text-xs font-mono font-medium text-amber-400">
+            <span className="font-mono text-xs font-bold text-amber-400">
               @ RM {inputs.petrolPricePerLiter.toFixed(2)}/L
             </span>
           </div>
 
           <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[11px] font-medium text-faint">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400">
               RM
             </span>
             <input
               type="number"
               step="10"
               min="0"
-              max="2000"
+              max="3000"
               inputMode="decimal"
               value={inputs.fatherPetrolCostRm || ''}
               onChange={(e) => {
@@ -378,33 +420,33 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           </div>
 
           {/* Quick Oil Price Switch */}
-          <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1">
+          <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-0.5">
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => onChange({ petrolPricePerLiter: 1.99 })}
                 className={`rounded px-1.5 py-0.5 text-[9px] font-medium ${
                   inputs.petrolPricePerLiter === 1.99
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                     : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
                 }`}
               >
-                RM 1.99/L (基准)
+                RM 1.99/L
               </button>
               <button
                 type="button"
                 onClick={() => onChange({ petrolPricePerLiter: 2.05 })}
                 className={`rounded px-1.5 py-0.5 text-[9px] font-medium ${
                   inputs.petrolPricePerLiter === 2.05
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                     : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
                 }`}
               >
-                RM 2.05/L (RON95)
+                RM 2.05/L
               </button>
             </div>
             <span className="font-mono text-zinc-300">
-              ~{(inputs.fatherPetrolCostRm / inputs.petrolPricePerLiter).toFixed(1)} L
+              {(inputs.fatherPetrolCostRm / inputs.petrolPricePerLiter).toFixed(1)} L
             </span>
           </div>
         </div>
