@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Fuel, Home, Gauge, Check, BookmarkPlus, X } from 'lucide-react';
 import { UserInputs, EvCalculationResult } from '../types/calculator';
-import { Zap, Fuel, Home, Gauge } from 'lucide-react';
+
+interface SavedVehicle {
+  id: string;
+  name: string;
+  consumptionKwhPer100Km: number;
+  savedAt: number;
+}
 
 const STORAGE_KEY = 'ev-saved-vehicles';
 
