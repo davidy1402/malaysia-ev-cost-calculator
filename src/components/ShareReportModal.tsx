@@ -28,7 +28,7 @@ export const ShareReportModal: React.FC<ShareReportModalProps> = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (e) {
-      // fallback
+      // fallback: ignore
     }
   };
 
@@ -38,55 +38,54 @@ export const ShareReportModal: React.FC<ShareReportModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl sm:p-6">
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
-              <Share2 size={18} strokeWidth={1.75} />
-            </div>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="w-full max-w-lg rounded-t-3xl border border-line bg-surface p-5 shadow-pop sm:rounded-3xl sm:p-6">
+        <div className="flex items-center justify-between border-b border-line pb-3.5">
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-soft text-brand">
+              <Share2 size={16} strokeWidth={1.75} />
+            </span>
             <div>
-              <h3 className="text-base font-semibold text-zinc-100">
-                生成试驾对比报告
-              </h3>
-              <p className="text-xs text-zinc-400">
-                支持一键复制到 WhatsApp 或 Obsidian
-              </p>
+              <h3 className="text-sm font-semibold tracking-tight text-ink">分享对比报告</h3>
+              <p className="text-[11px] text-muted">一键复制，发给 WhatsApp 或贴进 Obsidian</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-800/80 text-zinc-400 hover:text-zinc-100"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:text-ink"
+            aria-label="关闭"
           >
-            <X size={16} strokeWidth={1.75} />
+            <X size={15} strokeWidth={1.75} />
           </button>
         </div>
 
         {/* Text Preview Box */}
-        <div className="mt-4">
-          <pre className="h-64 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-950 p-3.5 text-[11px] font-mono leading-relaxed text-zinc-300 whitespace-pre-wrap selection:bg-emerald-500/30">
-            {reportText}
-          </pre>
-        </div>
+        <pre className="mt-4 h-64 overflow-y-auto whitespace-pre-wrap rounded-2xl border border-line bg-inset p-4 text-[11px] leading-relaxed text-ink">
+          {reportText}
+        </pre>
 
         {/* Action Buttons */}
         <div className="mt-4 flex gap-2.5">
           <button
             type="button"
             onClick={handleCopy}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-zinc-800 py-2.5 text-xs font-semibold text-zinc-100 hover:bg-zinc-700 active:scale-[0.98]"
+            className={`flex flex-1 items-center justify-center gap-2 rounded-xl border py-2.5 text-sm font-semibold transition-all active:scale-[0.98] ${
+              copied
+                ? 'border-brand bg-brand-soft text-brand'
+                : 'border-line bg-surface text-ink hover:border-line-strong'
+            }`}
           >
             {copied ? (
               <>
-                <Check size={16} className="text-emerald-400" />
-                <span className="text-emerald-400">已复制到剪贴板！</span>
+                <Check size={15} strokeWidth={1.75} />
+                <span>已复制！</span>
               </>
             ) : (
               <>
-                <Copy size={16} />
-                <span>复制完整文本</span>
+                <Copy size={15} strokeWidth={1.75} />
+                <span>复制全文</span>
               </>
             )}
           </button>
@@ -94,13 +93,14 @@ export const ShareReportModal: React.FC<ShareReportModalProps> = ({
           <button
             type="button"
             onClick={handleWhatsAppShare}
-            className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-emerald-500 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-onbrand shadow-card transition-all hover:bg-brand-strong active:scale-[0.98]"
           >
-            <MessageCircle size={16} />
-            <span>发送到 WhatsApp</span>
+            <MessageCircle size={15} strokeWidth={1.75} />
+            <span>发 WhatsApp</span>
           </button>
         </div>
       </div>
     </div>
   );
 };
+
