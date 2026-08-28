@@ -88,10 +88,10 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
       <div className="rounded-2xl border border-brand/25 bg-brand-soft/60 p-4 sm:p-5">
         <div>
           <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">
-            问销售的第一个数字
+            第一步：输入销售告诉你的电耗
           </span>
           <h4 className="mt-0.5 text-sm font-semibold text-ink">
-            这台车 Official 能耗多少？
+            百公里电耗 (kWh / 100km)
           </h4>
         </div>
 

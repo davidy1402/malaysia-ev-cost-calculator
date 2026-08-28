@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { EvCalculationResult, UserInputs } from '../types/calculator';
-import { ShieldCheck, CircleAlert, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import { formatRm } from '../utils/formatter';
 
 interface TnbBreakdownCardProps {
@@ -14,188 +14,114 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const totalKwh = result.newCombinedBill.kwh;
-  const marker600Percent = 60; // 600 kWh on 1000 kWh scale
 
   return (
-    <div className="card space-y-5 p-4 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h4 className="text-sm font-semibold tracking-tight text-ink">
-            新电费是怎么算出来的
-          </h4>
-          <p className="mt-0.5 text-[11px] text-muted">
-            TNB 住宅费率 · 2025/2026 结构，含所有附加项
-          </p>
+    <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 sm:p-6 backdrop-blur-sm">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
+            <Zap size={18} strokeWidth={1.75} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-100 sm:text-base">
+              家里新电费明细
+            </h3>
+            <p className="text-[11px] text-zinc-400">
+              按照 TNB 官方最新电费标准自动计算
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-line-strong"
+          className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
         >
-          <span>{isExpanded ? '收起明细' : '逐项明细'}</span>
-          {isExpanded ? (
-            <ChevronUp size={14} strokeWidth={1.75} />
-          ) : (
-            <ChevronDown size={14} strokeWidth={1.75} />
-          )}
+          <span>{isExpanded ? '收起明细' : '查看账单项目'}</span>
+          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
       </div>
 
-      {/* 600 kWh Threshold Visual Gauge */}
-      <div className="space-y-2.5 rounded-2xl border border-line bg-inset/50 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
-          <span className="text-ink">
-            每月总用电
-            <strong className="font-display ml-1.5 text-sm font-semibold text-brand">{totalKwh}</strong>
-            <span className="text-muted"> 度</span>
+      {/* Simplified Usage Summary Box */}
+      <div className="space-y-3 rounded-xl border border-zinc-800/80 bg-zinc-950/80 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <span className="text-zinc-200 font-medium">
+            每月总用电量：<strong className="font-mono text-base font-bold text-emerald-400">{totalKwh}</strong> 度 (kWh)
           </span>
-          <span className="text-[11px] text-muted">
-            家用 {result.baselineBill.kwh} + 车充 {result.evHomeChargingKwh}
+          <span className="text-xs text-zinc-400">
+            家里原本日常用电 {result.baselineBill.kwh} 度 + 车充 {result.evHomeChargingKwh} 度
           </span>
         </div>
 
-        {/* Progress bar with 600 marker */}
-        <div className="relative h-3.5 w-full overflow-hidden rounded-full bg-line">
-          {/* Baseline part */}
-          <div
-            className="absolute left-0 top-0 h-full bg-grid/80 transition-all duration-300"
-            style={{ width: `${Math.min(100, (result.baselineBill.kwh / 1000) * 100)}%` }}
-            title={`原家用电: ${result.baselineBill.kwh} kWh`}
-          />
-          {/* Added EV part */}
-          <div
-            className="absolute top-0 h-full bg-brand transition-all duration-300"
-            style={{
-              left: `${Math.min(100, (result.baselineBill.kwh / 1000) * 100)}%`,
-              width: `${Math.min(100 - (result.baselineBill.kwh / 1000) * 100, (result.evHomeChargingKwh / 1000) * 100)}%`
-            }}
-            title={`电车家充: ${result.evHomeChargingKwh} kWh`}
-          />
-          {/* 600 kWh marker line */}
-          <div
-            className="absolute top-0 z-10 h-full w-0.5 bg-oil shadow-[0_0_6px_rgba(180,83,9,0.6)]"
-            style={{ left: `${marker600Percent}%` }}
-          />
-        </div>
-
-        <div className="relative flex justify-between text-[10px] text-faint">
-          <span>0 度</span>
-          <span className="absolute font-semibold text-oil" style={{ left: '55%' }}>
-            ▲ 600 度优惠线
-          </span>
-          <span>1,000+ 度</span>
-        </div>
-
-        {/* 600 kWh waiver explanation status */}
-        <div className="flex items-center justify-between gap-2 rounded-xl bg-surface px-3 py-2.5 text-xs shadow-card">
-          <div className="flex items-center gap-1.5">
-            {result.newCombinedBill.isOver600Threshold ? (
-              <CircleAlert size={15} strokeWidth={1.75} className="shrink-0 text-warn" />
-            ) : (
-              <ShieldCheck size={15} strokeWidth={1.75} className="shrink-0 text-brand" />
-            )}
-            <span className={result.newCombinedBill.isOver600Threshold ? 'text-warn' : 'text-brand'}>
-              {result.newCombinedBill.isOver600Threshold
-                ? '已超过 600 度：零售费与 AFA 恢复征收'
-                : '仍在 600 度内：RM10 零售费与 AFA 全免'}
-            </span>
+        {/* Intuitive visual bar: Baseline vs Car */}
+        <div className="space-y-1.5">
+          <div className="relative h-3 w-full overflow-hidden rounded-full bg-zinc-800">
+            {/* Baseline portion */}
+            <div
+              className="absolute left-0 top-0 h-full bg-blue-500 rounded-l-full transition-all duration-300"
+              style={{ width: `${Math.min(100, (result.baselineBill.kwh / totalKwh) * 100)}%` }}
+            />
+            {/* EV portion */}
+            <div
+              className="absolute top-0 h-full bg-emerald-500 rounded-r-full transition-all duration-300"
+              style={{
+                left: `${Math.min(100, (result.baselineBill.kwh / totalKwh) * 100)}%`,
+                width: `${Math.max(0, 100 - (result.baselineBill.kwh / totalKwh) * 100)}%`
+              }}
+            />
           </div>
 
-          <span className="shrink-0 text-[11px] text-muted">
-            综合均价 ~{result.newCombinedBill.effectiveRatePerKwh.toFixed(3)} RM/kWh
-          </span>
+          <div className="flex justify-between text-[11px] text-zinc-400">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-blue-500 inline-block" />
+              <span>家里原本日常用电 ({Math.round((result.baselineBill.kwh / totalKwh) * 100)}%)</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block" />
+              <span>电车在家充电 ({Math.round((result.evHomeChargingKwh / totalKwh) * 100)}%)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Human-friendly note */}
+        <div className="rounded-lg bg-zinc-900/90 p-3 text-xs text-zinc-300 leading-relaxed border border-zinc-800/60">
+          💡 <strong className="text-zinc-100">简单来说：</strong>
+          家里现在的电费是 <strong className="text-zinc-100">{formatRm(result.baselineBill.totalAmount)}</strong>，买了电车后，每月因为充电会多出大约 <strong className="text-emerald-400">{formatRm(result.marginalHomeElectricityCost)}</strong> 电费，所以家里每月的总电费账单会变成 <strong className="text-emerald-400">{formatRm(result.newCombinedBill.totalAmount)}</strong>。
         </div>
       </div>
 
-      {/* Expanded Table Breakdown */}
+      {/* Expanded itemized list for curious users */}
       {isExpanded && (
-        <div className="overflow-hidden rounded-2xl border border-line bg-surface text-xs">
-          <div className="flex items-center justify-between border-b border-line bg-inset px-4 py-2.5 text-ink">
-            <span className="font-medium">TNB 账单逐项清单</span>
-            <span className="text-[11px] text-muted">共 {totalKwh.toLocaleString()} 度</span>
+        <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950/90 text-xs">
+          <div className="p-3 bg-zinc-900/80 border-b border-zinc-800 text-zinc-200 font-medium flex items-center justify-between">
+            <span>TNB 官方账单项目明细</span>
+            <span className="font-mono text-emerald-400 font-bold">总计 {formatRm(result.newCombinedBill.totalAmount)}</span>
           </div>
 
-          <div className="divide-y divide-line/60 text-ink">
-            {/* 1. Base Energy */}
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">1. 发电费 · Generation</div>
-                <div className="text-[10px] text-muted">
-                  {totalKwh.toLocaleString()} kWh × RM 0.2703
-                </div>
-              </div>
-              <span className="font-semibold">{formatRm(result.newCombinedBill.baseGeneration)}</span>
+          <div className="divide-y divide-zinc-800/60 font-mono text-zinc-300">
+            <div className="flex items-center justify-between px-3.5 py-2.5">
+              <span className="font-sans text-zinc-300">1. 基本用电费 (每度约 44.43 sen)</span>
+              <span className="font-semibold text-zinc-100">{formatRm(result.newCombinedBill.baseEnergySubtotal)}</span>
             </div>
 
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">2. 容量费 · Capacity</div>
-                <div className="text-[10px] text-muted">
-                  {totalKwh.toLocaleString()} kWh × RM 0.0455
-                </div>
-              </div>
-              <span>{formatRm(result.newCombinedBill.baseCapacity)}</span>
+            <div className="flex items-center justify-between px-3.5 py-2.5">
+              <span className="font-sans text-zinc-300">2. TNB 固定月费 (Retail Charge)</span>
+              <span className="text-zinc-200">{result.newCombinedBill.retailCharge > 0 ? formatRm(result.newCombinedBill.retailCharge) : '免费 (免征收)'}</span>
             </div>
 
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">3. 电网费 · Network</div>
-                <div className="text-[10px] text-muted">
-                  {totalKwh.toLocaleString()} kWh × RM 0.1285
-                </div>
-              </div>
-              <span>{formatRm(result.newCombinedBill.baseNetwork)}</span>
+            <div className="flex items-center justify-between px-3.5 py-2.5">
+              <span className="font-sans text-zinc-300">3. 燃油价格浮动调整 (AFA)</span>
+              <span className="text-zinc-200">{result.newCombinedBill.afaSurcharge > 0 ? formatRm(result.newCombinedBill.afaSurcharge) : '免费 (免征收)'}</span>
             </div>
 
-            {/* 4. Retail Charge */}
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">4. 零售服务费 · Retail Charge</div>
-                <div className="text-[10px] text-muted">
-                  {result.newCombinedBill.isRetailChargeWaived ? '600 度以内，免收' : '超过 600 度，正常征收'}
-                </div>
-              </div>
-              <span className={result.newCombinedBill.isRetailChargeWaived ? 'font-medium text-brand' : ''}>
-                {result.newCombinedBill.isRetailChargeWaived ? 'RM 0.00（已免）' : formatRm(result.newCombinedBill.retailCharge)}
-              </span>
+            <div className="flex items-center justify-between px-3.5 py-2.5">
+              <span className="font-sans text-zinc-300">4. 政府能源基金与税项 (KWTBB & SST)</span>
+              <span className="text-zinc-200">{formatRm(result.newCombinedBill.kwtbbFund + result.newCombinedBill.sstTax)}</span>
             </div>
 
-            {/* 5. AFA */}
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">5. 燃油调整费 · AFA（+{inputs.afaRateSen} sen/kWh）</div>
-                <div className="text-[10px] text-muted">
-                  {result.newCombinedBill.isAfaWaived ? '600 度以内，免收' : `${totalKwh.toLocaleString()} kWh × +${inputs.afaRateSen} sen`}
-                </div>
-              </div>
-              <span className={result.newCombinedBill.isAfaWaived ? 'font-medium text-brand' : ''}>
-                {result.newCombinedBill.isAfaWaived ? 'RM 0.00（已免）' : formatRm(result.newCombinedBill.afaSurcharge)}
-              </span>
-            </div>
-
-            {/* 6. KWTBB Fund */}
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">6. 可再生能源基金 · KWTBB（1.6%）</div>
-                <div className="text-[10px] text-muted">超过 300 度的部分征收</div>
-              </div>
-              <span>{formatRm(result.newCombinedBill.kwtbbFund)}</span>
-            </div>
-
-            {/* 7. SST */}
-            <div className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-inset/50">
-              <div>
-                <div className="font-medium">7. 服务税 · SST（8%）</div>
-                <div className="text-[10px] text-muted">超过 600 度的部分征收</div>
-              </div>
-              <span>{formatRm(result.newCombinedBill.sstTax)}</span>
-            </div>
-
-            {/* Total Row */}
-            <div className="flex items-center justify-between bg-brand-soft px-4 py-3 font-semibold text-brand">
-              <span className="text-sm">新电费每月总计</span>
-              <span className="font-display text-base">{formatRm(result.newCombinedBill.totalAmount)}</span>
+            <div className="flex items-center justify-between px-3.5 py-3 bg-emerald-950/40 text-emerald-300 font-bold">
+              <span className="font-sans">家里每月新电费总额</span>
+              <span className="text-base">{formatRm(result.newCombinedBill.totalAmount)}</span>
             </div>
           </div>
         </div>
