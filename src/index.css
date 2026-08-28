@@ -1,42 +1,126 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg-primary: #09090b;
-    --bg-surface: #18181b;
-    --bg-card: #27272a;
-    --text-primary: #f4f4f5;
-    --text-secondary: #a1a1aa;
-    --accent: #10b981;
-    --accent-hover: #059669;
-  }
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* ————————————————————————————————————————————————
+   Design tokens — "Botanic Paper"
+   Light-first editorial system with full dark mode
+———————————————————————————————————————————————— */
+:root {
+  --paper: #f4f3ee;
+  --surface: #ffffff;
+  --inset: #f8f7f2;
+  --line: #e6e4da;
+  --line-strong: #d3d0c3;
+  --ink: #1c201d;
+  --muted: #6b7069;
+  --faint: #a0a49a;
+
+  --brand: #0b7a55;
+  --brand-strong: #085c40;
+  --onbrand: #ffffff;
+  --brand-soft: #e3f1e9;
+
+  --oil: #b45309;
+  --oil-soft: #f9efe0;
+
+  --grid: #2b5fc7;
+  --grid-soft: #e8eefb;
+
+  --warn: #c2410c;
+  --warn-soft: #fdeee4;
+
+  --elev-card: 0 1px 2px rgb(28 32 29 / 0.04), 0 10px 30px -14px rgb(28 32 29 / 0.14);
+  --elev-pop: 0 24px 64px -24px rgb(28 32 29 / 0.35);
+}
+
+.dark {
+  --paper: #101310;
+  --surface: #181c18;
+  --inset: #121512;
+  --line: #262b26;
+  --line-strong: #3a413a;
+  --ink: #e9ece7;
+  --muted: #9aa39a;
+  --faint: #646c64;
+
+  --brand: #46c795;
+  --brand-strong: #6fd9b0;
+  --onbrand: #06231a;
+  --brand-soft: rgba(70, 199, 149, 0.14);
+
+  --oil: #e8a04c;
+  --oil-soft: rgba(232, 160, 76, 0.14);
+
+  --grid: #7fa4ee;
+  --grid-soft: rgba(127, 164, 238, 0.14);
+
+  --warn: #ef8354;
+  --warn-soft: rgba(239, 131, 84, 0.14);
+
+  --elev-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 30px -14px rgb(0 0 0 / 0.55);
+  --elev-pop: 0 24px 64px -24px rgb(0 0 0 / 0.7);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-inset: var(--inset);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-onbrand: var(--onbrand);
+  --color-brand-soft: var(--brand-soft);
+  --color-oil: var(--oil);
+  --color-oil-soft: var(--oil-soft);
+  --color-grid: var(--grid);
+  --color-grid-soft: var(--grid-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif;
+
+  --shadow-card: var(--elev-card);
+  --shadow-pop: var(--elev-pop);
+}
+
+@layer base {
   html {
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--brand) 24%, transparent);
   }
 }
 
-/* Custom subtle scrollbar */
+/* Thin, theme-aware scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(24, 24, 27, 0.5);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(82, 82, 91, 0.5);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(113, 113, 122, 0.7);
+  background: var(--line-strong);
+  border-radius: 999px;
 }
 
 /* Number input spinner reset */
@@ -47,4 +131,53 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
+
+/* Custom range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-strong);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: var(--brand);
+  border: 3px solid var(--surface);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 0.25);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: var(--brand);
+  border: 3px solid var(--surface);
+  cursor: pointer;
+}
+
+/* Hide horizontal scrollbar but keep scrolling */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reusable card surface */
+.card {
+  border-radius: 1.25rem;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  box-shadow: var(--elev-card);
+}
+
+

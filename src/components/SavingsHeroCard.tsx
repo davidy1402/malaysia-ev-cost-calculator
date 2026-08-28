@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { EvCalculationResult, UserInputs } from '../types/calculator';
-import { TrendingDown, AlertTriangle, Sparkles, Fuel, Zap, Home } from 'lucide-react';
+import { TrendingDown, TriangleAlert, Fuel, Zap, Home } from 'lucide-react';
 import { formatRm } from '../utils/formatter';
 import confetti from 'canvas-confetti';
 
@@ -22,7 +22,7 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
           particleCount: 25,
           spread: 60,
           origin: { y: 0.6 },
-          colors: ['#10b981', '#34d399', '#6ee7b7']
+          colors: ['#46c795', '#0b7a55', '#e8a04c']
         });
       } catch (e) {
         // ignore in SSR/test
@@ -32,71 +32,65 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Primary Savings Hero Banner */}
-      <div className={`relative overflow-hidden rounded-2xl border p-5 shadow-2xl backdrop-blur-md transition-all sm:p-6 ${
-        isPositiveSavings
-          ? 'border-emerald-500/40 bg-gradient-to-br from-emerald-950/40 via-zinc-900/90 to-zinc-950 ring-1 ring-emerald-500/20'
-          : 'border-amber-500/40 bg-gradient-to-br from-amber-950/30 via-zinc-900/90 to-zinc-950 ring-1 ring-amber-500/20'
-      }`}>
-        {/* Glow decoration */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl" />
+      {/* Verdict hero banner — premium brand card */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0e6b4a] via-[#0b563e] to-[#073122] p-6 text-white shadow-pop sm:p-8">
+        {/* Decorative glows */}
+        <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-[#46c795]/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-16 h-48 w-48 rounded-full bg-white/5 blur-3xl" />
 
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="flex h-6 items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-semibold text-emerald-300 ring-1 ring-emerald-500/30">
-                <Sparkles size={13} strokeWidth={2} />
-                换开 {inputs.modelName} 对比结论
-              </span>
-              {isPositiveSavings && (
-                <span className="text-xs font-medium text-emerald-400">
-                  比现状更划算！
-                </span>
-              )}
-            </div>
-
-            <div className="mt-2.5 flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold tracking-tight font-mono text-zinc-100 sm:text-5xl">
-                {isPositiveSavings ? formatRm(result.monthlyNetSavings) : formatRm(Math.abs(result.monthlyNetSavings))}
-              </span>
-              <span className="text-sm font-medium text-zinc-400">
-                / 每月{isPositiveSavings ? '净节省' : '多支出'}
-              </span>
-            </div>
-
-            <p className="mt-1 text-xs text-zinc-400 sm:text-sm">
-              一年累计节省 <span className="font-mono font-bold text-emerald-400">{formatRm(result.yearlyNetSavings)}</span> · 5年累计节省 <span className="font-mono font-bold text-emerald-400">{formatRm(result.fiveYearNetSavings)}</span>
-            </p>
+        <div className="relative">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-white/12 px-2.5 py-1 text-[11px] font-semibold text-[#b8ecd6] ring-1 ring-white/15">
+              结论
+            </span>
+            <span className="text-xs text-white/70">
+              换开 {inputs.modelName.trim() || '这台车'} 之后
+            </span>
           </div>
 
-          {/* Key comparison ratio pill */}
-          <div className="flex shrink-0 flex-row gap-2 sm:flex-col sm:items-end">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950/80 p-3 text-left sm:text-right">
-              <div className="text-[11px] font-medium text-zinc-400">
-                每 100km 能耗成本降低
+          <div className="mt-4 flex items-end gap-2">
+            <span className="text-sm font-medium text-white/70">
+              {isPositiveSavings ? '每月大约省下' : '每月大约多花'}
+            </span>
+          </div>
+          <div className="font-display mt-1 flex items-baseline gap-2">
+            <span className="text-[52px] font-semibold leading-none tracking-tight sm:text-[64px]">
+              {formatRm(Math.abs(result.monthlyNetSavings))}
+            </span>
+          </div>
+
+          <p className="mt-3 text-xs leading-relaxed text-white/70 sm:text-sm">
+            一年累计 {isPositiveSavings ? '省' : '多'}{' '}
+            <span className="font-semibold text-white">{formatRm(Math.abs(result.yearlyNetSavings))}</span>
+            ，五年累计{' '}
+            <span className="font-semibold text-white">{formatRm(Math.abs(result.fiveYearNetSavings))}</span>
+          </p>
+
+          {/* Per-100km ratio chip */}
+          <div className="mt-5 inline-flex items-center gap-2.5 rounded-2xl bg-white/10 px-3.5 py-2.5 ring-1 ring-white/15 backdrop-blur-sm">
+            <TrendingDown size={18} strokeWidth={2} className="shrink-0 text-[#8fe6c3]" />
+            <div>
+              <div className="text-xs font-semibold text-white">
+                每 100 km 便宜 {result.savingsRatioPerKm}%
               </div>
-              <div className="mt-0.5 flex items-center gap-1.5 font-mono text-lg font-bold text-emerald-400 sm:justify-end">
-                <TrendingDown size={18} strokeWidth={2.2} />
-                <span>{result.savingsRatioPerKm}%</span>
-              </div>
-              <div className="text-[10px] text-zinc-400">
-                电费 {formatRm(result.evCostPer100Km)} vs 油费 {formatRm(result.petrolCostPer100Km)}
+              <div className="mt-0.5 text-[10px] text-white/60">
+                电 {formatRm(result.evCostPer100Km)} · 油 {formatRm(result.petrolCostPer100Km)}
               </div>
             </div>
           </div>
         </div>
 
-        {/* 600 kWh Threshold Alert Banner */}
+        {/* 600 kWh threshold alert, embedded */}
         {result.crossed600Threshold && (
-          <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-200">
-            <AlertTriangle size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-amber-400" />
-            <div className="space-y-0.5">
-              <div className="font-semibold text-amber-300">
-                TNB 阶梯提醒：总用电跨过 600 kWh 门槛 ({result.baselineBill.kwh} kWh ➔ {result.newCombinedBill.kwh} kWh)
+          <div className="relative mt-5 flex items-start gap-2.5 rounded-2xl bg-white/10 p-3.5 ring-1 ring-white/15">
+            <TriangleAlert size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-[#ffd28a]" />
+            <div className="space-y-0.5 text-xs leading-relaxed">
+              <div className="font-semibold text-[#ffe3b8]">
+                总用电跨过 600 度门槛（{result.baselineBill.kwh} ➔ {result.newCombinedBill.kwh} kWh）
               </div>
-              <p className="text-[11px] text-amber-200/80">
-                跨过 600 度后，TNB 将恢复征收 RM10 Retail Charge 与每月 AFA 燃油调整费（约多出 {formatRm(result.thresholdJumpPenaltyRm)}）。
-                即便如此，扣除全部电费后每月依然净省 <strong className="font-mono text-emerald-300">{formatRm(result.monthlyNetSavings)}</strong>！
+              <p className="text-[11px] text-white/70">
+                跨线后 TNB 会恢复收取 RM10 零售费与 AFA 燃油调整费（约多 {formatRm(result.thresholdJumpPenaltyRm)}）。
+                即便如此，每月仍净省 <strong className="text-white">{formatRm(result.monthlyNetSavings)}</strong>。
               </p>
             </div>
           </div>
@@ -106,72 +100,74 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
       {/* Side-by-side comparison cards */}
       <div className="grid gap-3 sm:grid-cols-2">
         {/* Status Quo Box */}
-        <div className="relative space-y-3 rounded-xl border border-zinc-800 bg-zinc-900/70 p-4">
-          <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300">
-              <Fuel size={16} strokeWidth={1.75} className="text-amber-400" />
-              <span>【现状】家里原电费 + 爸爸油费</span>
+        <div className="space-y-3 rounded-2xl border border-line bg-surface p-4 shadow-card">
+          <div className="flex items-center justify-between border-b border-line pb-2.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+              <Fuel size={15} strokeWidth={1.75} className="text-oil" />
+              <span>现在 · 油车生活</span>
             </div>
-            <span className="font-mono text-xs font-bold text-zinc-200">
-              {formatRm(result.oldTotalMonthlyEnergyExpense)} /月
+            <span className="font-display text-sm font-semibold text-ink">
+              {formatRm(result.oldTotalMonthlyEnergyExpense)}
+              <span className="ml-0.5 text-[10px] font-normal text-faint">/月</span>
             </span>
           </div>
 
           <div className="space-y-2 text-xs">
-            <div className="flex items-center justify-between text-zinc-400">
+            <div className="flex items-center justify-between text-muted">
               <span className="flex items-center gap-1.5">
-                <Home size={14} strokeWidth={1.75} />
-                家里基础电费 ({result.baselineBill.kwh} kWh)
+                <Home size={13} strokeWidth={1.75} className="text-grid" />
+                家里电费（{result.baselineBill.kwh} 度）
               </span>
-              <span className="font-mono text-zinc-200">{formatRm(result.baselineBill.totalAmount)}</span>
+              <span className="font-medium text-ink">{formatRm(result.baselineBill.totalAmount)}</span>
             </div>
 
-            <div className="flex items-center justify-between text-zinc-400">
+            <div className="flex items-center justify-between text-muted">
               <span className="flex items-center gap-1.5">
-                <Fuel size={14} strokeWidth={1.75} className="text-amber-400" />
-                爸爸每月汽油费 (RON95)
+                <Fuel size={13} strokeWidth={1.75} className="text-oil" />
+                每月汽油（RON95）
               </span>
-              <span className="font-mono text-amber-400">{formatRm(result.petrolMonthlyCost)}</span>
+              <span className="font-medium text-oil">{formatRm(result.petrolMonthlyCost)}</span>
             </div>
 
-            <div className="rounded-lg bg-zinc-950/60 p-2 text-[11px] text-zinc-400">
-              对应月行驶里程：约 <strong className="text-zinc-200 font-mono">{result.petrolEquivalentDistanceKm.toLocaleString()} km</strong>（按每升 14km 测算）
+            <div className="rounded-xl bg-inset p-2.5 text-[11px] leading-relaxed text-muted">
+              够开约 <strong className="font-semibold text-ink">{result.petrolEquivalentDistanceKm.toLocaleString()} km</strong>／月（按 1 公升 14 km 估算）
             </div>
           </div>
         </div>
 
         {/* New Scenario Box */}
-        <div className="relative space-y-3 rounded-xl border border-emerald-500/30 bg-emerald-950/10 p-4 ring-1 ring-emerald-500/10">
-          <div className="flex items-center justify-between border-b border-emerald-500/20 pb-2.5">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-300">
-              <Zap size={16} strokeWidth={1.75} className="text-emerald-400" />
-              <span>【新方案】新 TNB 电费 + 快充</span>
+        <div className="space-y-3 rounded-2xl border border-brand/30 bg-brand-soft/40 p-4 shadow-card">
+          <div className="flex items-center justify-between border-b border-brand/20 pb-2.5">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-brand">
+              <Zap size={15} strokeWidth={1.75} />
+              <span>以后 · 电车生活</span>
             </div>
-            <span className="font-mono text-xs font-bold text-emerald-300">
-              {formatRm(result.newTotalMonthlyEnergyExpense)} /月
+            <span className="font-display text-sm font-semibold text-brand">
+              {formatRm(result.newTotalMonthlyEnergyExpense)}
+              <span className="ml-0.5 text-[10px] font-normal opacity-60">/月</span>
             </span>
           </div>
 
           <div className="space-y-2 text-xs">
-            <div className="flex items-center justify-between text-zinc-300">
+            <div className="flex items-center justify-between text-muted">
               <span className="flex items-center gap-1.5">
-                <Home size={14} strokeWidth={1.75} className="text-emerald-400" />
-                新 TNB 总电费 ({result.newCombinedBill.kwh} kWh)
+                <Home size={13} strokeWidth={1.75} className="text-brand" />
+                新 TNB 总电费（{result.newCombinedBill.kwh} 度）
               </span>
-              <span className="font-mono font-semibold text-zinc-100">{formatRm(result.newCombinedBill.totalAmount)}</span>
+              <span className="font-semibold text-ink">{formatRm(result.newCombinedBill.totalAmount)}</span>
             </div>
 
-            <div className="flex items-center justify-between text-zinc-400 pl-4 text-[11px]">
-              <span>└ 其中：电车家充增加电费</span>
-              <span className="font-mono text-emerald-400">+{formatRm(result.marginalHomeElectricityCost)}</span>
+            <div className="flex items-center justify-between pl-4 text-[11px] text-muted">
+              <span>└ 其中电车多出来的部分</span>
+              <span className="font-medium text-brand">+{formatRm(result.marginalHomeElectricityCost)}</span>
             </div>
 
-            <div className="flex items-center justify-between text-zinc-400">
+            <div className="flex items-center justify-between text-muted">
               <span className="flex items-center gap-1.5">
-                <Zap size={14} strokeWidth={1.75} className="text-blue-400" />
-                外出商业快充预估 (10%)
+                <Zap size={13} strokeWidth={1.75} className="text-grid" />
+                在外快充（约 10%）
               </span>
-              <span className="font-mono text-zinc-300">{formatRm(result.publicChargingCost)}</span>
+              <span className="font-medium text-ink">{formatRm(result.publicChargingCost)}</span>
             </div>
           </div>
         </div>

@@ -1,12 +1,8 @@
-export interface VehiclePreset {
+export interface SavedVehicle {
   id: string;
   name: string;
-  brand: string;
   consumptionKwhPer100Km: number;
-  batteryCapacityKwh: number;
-  claimedRangeWltpKm: number;
-  priceEstimateRm?: string;
-  tag?: string;
+  savedAt: number;
 }
 
 export interface UserInputs {

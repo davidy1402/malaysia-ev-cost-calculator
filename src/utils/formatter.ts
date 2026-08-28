@@ -26,7 +26,7 @@ export function generateShareReport(inputs: UserInputs, result: EvCalculationRes
     day: 'numeric'
   });
 
-  return `🚗⚡ *【${inputs.modelName} 试驾电费与油费对比报告】*
+  return `🚗⚡ *【${inputs.modelName.trim() || 'EV'} 试驾电费与油费对比报告】*
 📅 日期：${dateStr}
 
 📊 *核心能耗数据*
