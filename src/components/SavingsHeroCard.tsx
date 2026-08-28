@@ -126,7 +126,7 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
               <div className="flex items-center gap-1.5 font-sans text-zinc-400">
                 <span>外出偶尔快充 (预估10%)</span>
               </div>
-              <span className="text-zinc-400">{formatRm(result.evPublicChargingCostRm)}</span>
+              <span className="text-zinc-400">{formatRm(result.publicChargingCost)}</span>
             </div>
           </div>
         </div>

@@ -9,7 +9,6 @@ interface TnbBreakdownCardProps {
 }
 
 export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
-  inputs,
   result
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
