@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Fuel, Home, Gauge, Check, BookmarkPlus, X, BatteryCharging } from 'lucide-react';
 import { UserInputs, EvCalculationResult } from '../types/calculator';
 import { formatRm } from '../utils/formatter';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface SavedVehicle {
   id: string;
@@ -49,6 +50,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
   result,
   onChange
 }) => {
+  const { t } = useLanguage();
   const [savedVehicles, setSavedVehicles] = useState<SavedVehicle[]>(loadSavedVehicles);
   const [justSaved, setJustSaved] = useState(false);
 
@@ -92,15 +94,15 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-              第 1 步：问销售这辆车的官方电耗
+              {t.showroom.step1Tag}
             </span>
             <h3 className="mt-0.5 text-sm font-semibold text-zinc-100 sm:text-base">
-              百公里电耗 (kWh / 100km)
+              {t.showroom.consumptionTitle}
             </h3>
           </div>
 
           <div className="text-right">
-            <span className="text-[11px] text-zinc-400">加 10% 交流充电损耗后 ≈ </span>
+            <span className="text-[11px] text-zinc-400">{t.showroom.lossNote}</span>
             <strong className="font-mono text-xs text-emerald-300">
               {grossKwhPer100Km} kWh/100km
             </strong>
@@ -153,7 +155,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             type="text"
             value={inputs.modelName}
             onChange={(e) => onChange({ modelName: e.target.value })}
-            placeholder="车型名称（如 Proton e.MAS 7）"
+            placeholder={t.showroom.modelPlaceholder}
             maxLength={40}
             className="min-w-0 flex-1 rounded-xl border border-zinc-700/80 bg-zinc-950/80 px-3 py-2 text-xs font-medium text-zinc-200 placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
           />
@@ -172,12 +174,12 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             {justSaved ? (
               <>
                 <Check size={14} strokeWidth={2} />
-                已记住
+                {t.showroom.rememberedBtn}
               </>
             ) : (
               <>
                 <BookmarkPlus size={14} strokeWidth={1.75} />
-                记住这辆车
+                {t.showroom.rememberBtn}
               </>
             )}
           </button>
@@ -224,15 +226,15 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
         )}
       </div>
 
-      {/* 2. Charging Mode Toggle (90% Mixed vs 100% Home) */}
+      {/* 2. Charging Mode Toggle */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-3 sm:p-4">
         <div className="flex items-center justify-between mb-2">
           <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
             <BatteryCharging size={15} className="text-emerald-400" />
-            <span>充电场景模式</span>
+            <span>{t.showroom.chargingModeLabel}</span>
           </label>
           <span className="text-[11px] text-zinc-400">
-            {inputs.chargingMode === 'mixed' ? '平时家充 (90%) + 出行偶尔快充 (10%)' : '纯家充 (100% 在家充)'}
+            {inputs.chargingMode === 'mixed' ? t.showroom.chargingModeMixedSub : t.showroom.chargingModeHomeSub}
           </span>
         </div>
 
@@ -246,8 +248,8 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 : 'border border-zinc-800 bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
             }`}
           >
-            <span className="font-semibold text-sm">🔌 90% 家充 + 10% 外充</span>
-            <span className="text-[10px] text-zinc-400 mt-0.5">最贴近真实用车（含长途快充）</span>
+            <span className="font-semibold text-xs sm:text-sm">{t.showroom.mixedModeBtnTitle}</span>
+            <span className="text-[10px] text-zinc-400 mt-0.5">{t.showroom.mixedModeBtnSub}</span>
           </button>
 
           <button
@@ -259,13 +261,13 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 : 'border border-zinc-800 bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
             }`}
           >
-            <span className="font-semibold text-sm">🏠 100% 全在家里充</span>
-            <span className="text-[10px] text-zinc-400 mt-0.5">零商业快充支出，省钱最大化</span>
+            <span className="font-semibold text-xs sm:text-sm">{t.showroom.homeOnlyBtnTitle}</span>
+            <span className="text-[10px] text-zinc-400 mt-0.5">{t.showroom.homeOnlyBtnSub}</span>
           </button>
         </div>
       </div>
 
-      {/* 3. Grid of Baseline Inputs: Mileage, Real Household TNB Bill, Father's Petrol */}
+      {/* 3. Grid of Baseline Inputs */}
       <div className="grid gap-3 sm:grid-cols-3">
         {/* 1. Monthly Mileage */}
         <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
@@ -274,7 +276,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               <span className={`${iconChip} bg-emerald-500/10 text-emerald-400`}>
                 <Gauge size={14} />
               </span>
-              <span>每月开多少公里</span>
+              <span>{t.showroom.monthlyMileageLabel}</span>
             </label>
             <span className="font-mono text-xs font-bold text-emerald-400">
               {inputs.monthlyMileageKm.toLocaleString()} km
@@ -307,7 +309,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               onClick={() => onChange({ monthlyMileageKm: result.petrolEquivalentDistanceKm })}
               className="rounded px-2 py-0.5 text-[10px] font-medium bg-emerald-950/50 text-emerald-300 border border-emerald-500/30"
             >
-              对齐爸爸油费 ({result.petrolEquivalentDistanceKm}km)
+              {t.showroom.alignPetrolBtn.replace('{km}', result.petrolEquivalentDistanceKm.toString())}
             </button>
             {[1000, 1500, 2000].map((km) => (
               <button
@@ -326,14 +328,14 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           </div>
         </div>
 
-        {/* 2. Real Household Baseline Bill (Anchored on David's 501 kWh real bill) */}
+        {/* 2. Real Household Baseline Bill */}
         <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
           <div className="flex items-center justify-between">
             <label className={tileLabel}>
               <span className={`${iconChip} bg-blue-500/10 text-blue-400`}>
                 <Home size={14} />
               </span>
-              <span>家里现在用电</span>
+              <span>{t.showroom.homeElectricityLabel}</span>
             </label>
             <span className="font-mono text-xs font-bold text-blue-400">
               {formatRm(result.baselineBill.totalAmount === 172.71 ? 172.70 : result.baselineBill.totalAmount)}
@@ -367,9 +369,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           {/* Quick Real Bill Presets */}
           <div className="flex flex-wrap gap-1 pt-0.5">
             {[
-              { label: '501度 (最新账单 实付RM172.70)', kwh: 501 },
-              { label: '430度 (半年均值 RM131)', kwh: 430 },
-              { label: '390度 (省电月 RM117)', kwh: 390 }
+              { label: t.showroom.bill501Chip, kwh: 501 },
+              { label: t.showroom.bill430Chip, kwh: 430 },
+              { label: t.showroom.bill390Chip, kwh: 390 }
             ].map((b) => (
               <button
                 key={b.kwh}
@@ -394,7 +396,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               <span className={`${iconChip} bg-amber-500/10 text-amber-400`}>
                 <Fuel size={14} />
               </span>
-              <span>爸爸现在的油钱</span>
+              <span>{t.showroom.fatherPetrolLabel}</span>
             </label>
             <span className="font-mono text-xs font-bold text-amber-400">
               @ RM {inputs.petrolPricePerLiter.toFixed(2)}/L
@@ -448,7 +450,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               </button>
             </div>
             <span className="font-mono text-zinc-300">
-              {(inputs.fatherPetrolCostRm / inputs.petrolPricePerLiter).toFixed(1)} L
+              {(inputs.fatherPetrolCostRm / inputs.petrolPricePerLiter).toFixed(1)} {t.showroom.petrolUnit}
             </span>
           </div>
         </div>

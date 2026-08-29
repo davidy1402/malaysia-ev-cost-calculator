@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserInputs } from '../types/calculator';
 import { X, SlidersHorizontal, BatteryCharging, Zap, Fuel } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface AdvancedSettingsDrawerProps {
   isOpen: boolean;
@@ -9,10 +10,10 @@ interface AdvancedSettingsDrawerProps {
   onChange: (patch: Partial<UserInputs>) => void;
 }
 
-const fieldLabel = 'mb-1 block text-[11px] font-medium text-muted';
+const fieldLabel = 'mb-1 block text-[11px] font-medium text-zinc-400';
 const fieldInput =
-  'w-full rounded-lg border border-line bg-inset px-2.5 py-1.5 text-xs font-semibold text-ink ' +
-  'transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15';
+  'w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs font-semibold text-zinc-100 ' +
+  'transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/15';
 
 function SettingsSection({
   icon,
@@ -26,10 +27,10 @@ function SettingsSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-3 rounded-2xl border border-line bg-inset/40 p-3.5">
+    <div className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
       <div className="flex items-center gap-2">
         <span className={`flex h-6 w-6 items-center justify-center rounded-md ${chipClass}`}>{icon}</span>
-        <span className="text-xs font-semibold text-ink">{title}</span>
+        <span className="text-xs font-semibold text-zinc-200">{title}</span>
       </div>
       {children}
     </div>
@@ -42,27 +43,28 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
   inputs,
   onChange
 }) => {
+  const { t } = useLanguage();
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/45 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-line bg-surface p-5 shadow-pop sm:rounded-3xl sm:p-6">
-        <div className="flex items-center justify-between border-b border-line pb-3.5">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl sm:rounded-3xl sm:p-6">
+        <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-soft text-brand">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
               <SlidersHorizontal size={16} strokeWidth={1.75} />
             </span>
             <div>
-              <h3 className="text-sm font-semibold tracking-tight text-ink">参数微调</h3>
-              <p className="text-[11px] text-muted">油价、充电损耗、快充比例与 TNB 附加费</p>
+              <h3 className="text-sm font-semibold tracking-tight text-zinc-100">{t.settingsDrawer.title}</h3>
+              <p className="text-[11px] text-zinc-400">{t.settingsDrawer.sub}</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted transition-colors hover:text-ink"
-            aria-label="关闭"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors"
+            aria-label="Close"
           >
             <X size={15} strokeWidth={1.75} />
           </button>
@@ -72,25 +74,25 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
           {/* 1. Petrol Settings */}
           <SettingsSection
             icon={<Fuel size={13} strokeWidth={1.75} />}
-            title="汽油参数"
-            chipClass="bg-oil-soft text-oil"
+            title={t.settingsDrawer.petrolSection}
+            chipClass="bg-amber-500/10 text-amber-400"
           >
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={fieldLabel}>汽油单价 (RM/L)</label>
+                <label className={fieldLabel}>{t.settingsDrawer.petrolPrice}</label>
                 <input
                   type="number"
-                  step="0.05"
+                  step="0.01"
                   inputMode="decimal"
                   value={inputs.petrolPricePerLiter}
-                  onChange={(e) => onChange({ petrolPricePerLiter: parseFloat(e.target.value) || 2.05 })}
+                  onChange={(e) => onChange({ petrolPricePerLiter: parseFloat(e.target.value) || 1.99 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-faint">默认 RON95 RM 2.05</span>
+                <span className="mt-1 block text-[10px] text-zinc-500">基准 RM 1.99 (RON95 RM 2.05)</span>
               </div>
 
               <div>
-                <label className={fieldLabel}>油车油耗 (km / L)</label>
+                <label className={fieldLabel}>{t.settingsDrawer.petrolKmPerL}</label>
                 <input
                   type="number"
                   step="0.5"
@@ -99,131 +101,108 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
                   onChange={(e) => onChange({ petrolFuelEfficiencyKmPerL: parseFloat(e.target.value) || 14.0 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-faint">约 7.1 L / 100km</span>
+                <span className="mt-1 block text-[10px] text-zinc-500">≈ 7.14 L / 100km</span>
               </div>
             </div>
           </SettingsSection>
 
-          {/* 2. Charging Efficiency & Home Ratio */}
+          {/* 2. Charging Efficiency & Public Ratio */}
           <SettingsSection
             icon={<BatteryCharging size={13} strokeWidth={1.75} />}
-            title="充电损耗与场景分配"
-            chipClass="bg-brand-soft text-brand"
+            title={t.settingsDrawer.evSection}
+            chipClass="bg-emerald-500/10 text-emerald-400"
           >
-            <div>
-              <div className="mb-1.5 flex justify-between text-[11px]">
-                <span className="text-muted">家充（AC 慢充）比例</span>
-                <span className="font-semibold text-brand">
-                  {Math.round(inputs.homeChargingRatio * 100)}% 家充 /{' '}
-                  {Math.round((1 - inputs.homeChargingRatio) * 100)}% 外充
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0.5"
-                max="1.0"
-                step="0.05"
-                value={inputs.homeChargingRatio}
-                onChange={(e) => onChange({ homeChargingRatio: parseFloat(e.target.value) })}
-              />
-              <span className="mt-1 block text-[10px] text-faint">多数车主 90% 都在家充</span>
-            </div>
-
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className={fieldLabel}>充电桩转换能效</label>
-                <select
-                  value={inputs.chargingEfficiency}
-                  onChange={(e) => onChange({ chargingEfficiency: parseFloat(e.target.value) })}
+                <label className={fieldLabel}>{t.settingsDrawer.chargingLoss}</label>
+                <input
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="30"
+                  inputMode="numeric"
+                  value={Math.round((1 - inputs.chargingEfficiency) * 100)}
+                  onChange={(e) => {
+                    const loss = parseFloat(e.target.value) || 10;
+                    onChange({ chargingEfficiency: (100 - loss) / 100 });
+                  }}
                   className={fieldInput}
-                >
-                  <option value="0.95">95%（高效 7kW/11kW）</option>
-                  <option value="0.90">90%（标准损耗 · 推荐）</option>
-                  <option value="0.85">85%（3-pin 随车充）</option>
-                </select>
+                />
+                <span className="mt-1 block text-[10px] text-zinc-500">标准 AC 损耗 10%</span>
               </div>
 
               <div>
-                <label className={fieldLabel}>外充 DC 快充电价 (RM/kWh)</label>
+                <label className={fieldLabel}>{t.settingsDrawer.publicDcPrice}</label>
                 <input
                   type="number"
                   step="0.1"
                   inputMode="decimal"
                   value={inputs.publicDcPricePerKwh}
-                  onChange={(e) => onChange({ publicDcPricePerKwh: parseFloat(e.target.value) || 1.4 })}
+                  onChange={(e) => onChange({ publicDcPricePerKwh: parseFloat(e.target.value) || 1.40 })}
                   className={fieldInput}
                 />
+                <span className="mt-1 block text-[10px] text-zinc-500">大马快充均价 RM 1.40</span>
               </div>
             </div>
           </SettingsSection>
 
-          {/* 3. TNB Tariff Options */}
+          {/* 3. TNB & ToU Settings */}
           <SettingsSection
             icon={<Zap size={13} strokeWidth={1.75} />}
-            title="TNB 电价附加项"
-            chipClass="bg-grid-soft text-grid"
+            title={t.settingsDrawer.tnbSection}
+            chipClass="bg-blue-500/10 text-blue-400"
           >
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               <div>
-                <label className={fieldLabel}>AFA 燃油调整费 (sen/kWh)</label>
+                <label className={fieldLabel}>{t.settingsDrawer.afaRate}</label>
                 <input
                   type="number"
                   step="0.1"
                   inputMode="decimal"
                   value={inputs.afaRateSen}
-                  onChange={(e) => onChange({ afaRateSen: parseFloat(e.target.value) || 3.8 })}
+                  onChange={(e) => onChange({ afaRateSen: parseFloat(e.target.value) || 3.80 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-faint">当前 +3.80 sen</span>
+                <span className="mt-1 block text-[10px] text-zinc-500">2026年8月最新：+3.80 sen/kWh</span>
               </div>
 
-              <div>
-                <label className={fieldLabel}>电池包容量 (kWh)</label>
-                <input
-                  type="number"
-                  step="1"
-                  inputMode="numeric"
-                  value={inputs.batteryCapacityKwh}
-                  onChange={(e) => onChange({ batteryCapacityKwh: parseFloat(e.target.value) || 60 })}
-                  className={fieldInput}
-                />
-                <span className="mt-1 block text-[10px] text-faint">用于满电充测算</span>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-zinc-200">
+                    {t.settingsDrawer.touToggle}
+                  </label>
+                  <input
+                    type="checkbox"
+                    checked={inputs.isTouEnabled}
+                    onChange={(e) => onChange({ isTouEnabled: e.target.checked })}
+                    className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-500/20"
+                  />
+                </div>
+                {inputs.isTouEnabled && (
+                  <div className="mt-2.5 pt-2 border-t border-zinc-800">
+                    <label className={fieldLabel}>{t.settingsDrawer.touRate}</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      inputMode="decimal"
+                      value={inputs.touOffPeakRateSen}
+                      onChange={(e) => onChange({ touOffPeakRateSen: parseFloat(e.target.value) || 28.0 })}
+                      className={fieldInput}
+                    />
+                  </div>
+                )}
               </div>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-line pt-3">
-              <div className="pr-3">
-                <span className="block text-xs font-medium text-ink">TNB ToU 分时电价</span>
-                <span className="text-[10px] leading-snug text-faint">
-                  夜间低谷约 28 sen/kWh，需 Smart Meter
-                </span>
-              </div>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={inputs.isTouEnabled}
-                onClick={() => onChange({ isTouEnabled: !inputs.isTouEnabled })}
-                className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
-                  inputs.isTouEnabled ? 'bg-brand' : 'bg-line-strong'
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-surface shadow transition-all ${
-                    inputs.isTouEnabled ? 'left-[22px]' : 'left-0.5'
-                  }`}
-                />
-              </button>
             </div>
           </SettingsSection>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5 border-t border-zinc-800 pt-3">
           <button
             type="button"
             onClick={onClose}
-            className="w-full rounded-xl bg-brand py-2.5 text-sm font-semibold text-onbrand shadow-card transition-all hover:bg-brand-strong active:scale-[0.98]"
+            className="w-full rounded-2xl bg-emerald-500 py-3 text-xs font-bold text-zinc-950 transition-all hover:bg-emerald-400 active:scale-98"
           >
-            完成，开始算
+            {t.settingsDrawer.closeBtn}
           </button>
         </div>
       </div>

@@ -10,10 +10,12 @@ import { TnbBreakdownCard } from './components/TnbBreakdownCard';
 import { ThresholdJumpExplainerCard } from './components/ThresholdJumpExplainerCard';
 import { AdvancedSettingsDrawer } from './components/AdvancedSettingsDrawer';
 import { ShareReportModal } from './components/ShareReportModal';
+import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
 
 type Theme = 'light' | 'dark';
 
-export function App() {
+function AppContent() {
+  const { t } = useLanguage();
   const [inputs, setInputs] = useState<UserInputs>(DEFAULT_USER_INPUTS);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
@@ -98,12 +100,20 @@ export function App() {
       {/* Footer */}
       <footer className="border-t border-line py-8">
         <p className="text-center text-xs leading-relaxed text-faint">
-          所有数字为估算，实际以 TNB 账单与经销商报价为准。
+          {t.footer.disclaimer}
           <span className="hidden sm:inline"> · </span>
           <br className="sm:hidden" />
-          Malaysia EV × TNB Cost Calculator
+          {t.footer.appName}
         </p>
       </footer>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
