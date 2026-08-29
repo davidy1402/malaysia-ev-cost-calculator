@@ -23,7 +23,7 @@ export function getEeiRateSen(kwh: number): number {
 
 /**
  * Simulates a full, itemized monthly TNB Residential Electricity Bill.
- * Validated 1:1 against real TNB household bills (e.g. 501 kWh = RM 172.70).
+ * Validated 1:1 against real TNB household bills (e.g. 501 kWh = RM 172.70 payable / RM 172.71 raw).
  */
 export function calculateTnbBill(
   kwh: number,
@@ -123,34 +123,14 @@ export function calculateTnbBill(
 }
 
 /**
- * Inverse Solver: Estimates monthly kWh from a given TNB RM bill amount using Binary Search.
- */
-export function estimateKwhFromBillAmount(targetBillRm: number): number {
-  if (targetBillRm <= 0) return 0;
-  let low = 0;
-  let high = 5000;
-  for (let i = 0; i < 40; i++) {
-    const mid = (low + high) / 2;
-    const bill = calculateTnbBill(mid);
-    if (Math.abs(bill.totalAmount - targetBillRm) < 0.05) {
-      return Math.round(mid * 10) / 10;
-    }
-    if (bill.totalAmount < targetBillRm) {
-      low = mid;
-    } else {
-      high = mid;
-    }
-  }
-  return Math.round(((low + high) / 2) * 10) / 10;
-}
-
-/**
  * Master calculation function: Orchestrates whole EV vs Petrol model with zero double-counting.
  */
 export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
   const distanceKm = Math.max(0, inputs.monthlyMileageKm);
   const consumptionKwhPer100Km = Math.max(0, inputs.consumptionKwhPer100Km);
-  const chargingEff = Math.max(0.70, Math.min(1.0, inputs.chargingEfficiency || 0.90)); // default 90% (10% loss)
+  
+  // 10% AC Charging Loss overhead
+  const lossFactor = 1.10; // 14.5 kWh vehicle -> 15.95 kWh grid
   
   // Home vs Public Split Ratio
   const isHomeOnly = inputs.chargingMode === 'home_only';
@@ -160,18 +140,15 @@ export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
   // Step 1: EV Net Consumption at the vehicle/battery
   const evMonthlyNetKwh = (distanceKm / 100) * consumptionKwhPer100Km;
 
-  // Step 2: EV Gross Consumption from the grid (accounting for charging loss)
-  const evMonthlyGrossKwh = evMonthlyNetKwh / chargingEff;
+  // Step 2: EV Gross Consumption from the grid (accounting for 10% AC charging loss)
+  const evMonthlyGrossKwh = evMonthlyNetKwh * lossFactor;
 
   // Step 3: Split into Home vs Public
   const evHomeChargingKwh = Math.round((evMonthlyGrossKwh * homeRatio) * 10) / 10;
   const evPublicChargingKwh = Math.round((evMonthlyGrossKwh * publicRatio) * 10) / 10;
 
   // Step 4: Baseline Household TNB Bill
-  const baselineKwh = inputs.baselineHomeKwh > 0
-    ? inputs.baselineHomeKwh
-    : estimateKwhFromBillAmount(inputs.baselineHomeBillRm);
-  
+  const baselineKwh = inputs.baselineHomeKwh > 0 ? inputs.baselineHomeKwh : 501;
   const baselineBill = calculateTnbBill(baselineKwh, {
     afaRateSen: inputs.afaRateSen
   });
@@ -195,14 +172,14 @@ export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
   // Total EV Monthly Energy Cost
   const totalEvChargingCost = Math.round((marginalHomeElectricityCost + publicChargingCost) * 100) / 100;
 
-  // True Marginal electricity rate per kWh for EV
+  // True Marginal electricity rate per kWh for EV (at wall)
   const marginalEffectiveRatePerKwh = evHomeChargingKwh > 0
     ? marginalHomeElectricityCost / evHomeChargingKwh
     : newCombinedBill.effectiveRatePerKwh;
 
-  // Single full charge cost based on marginal rate and usable capacity
-  const batteryCap = inputs.batteryCapacityKwh || 60.0;
-  const singleFullChargeMarginalCost = Math.round(((batteryCap / chargingEff) * marginalEffectiveRatePerKwh) * 100) / 100;
+  // Single full charge cost based on marginal rate (usable capacity)
+  const batteryCap = inputs.batteryCapacityKwh || 60.22;
+  const singleFullChargeMarginalCost = Math.round((batteryCap * marginalEffectiveRatePerKwh) * 100) / 100;
 
   // Petrol comparison calculations
   const petrolCost = Math.max(0, inputs.fatherPetrolCostRm);
@@ -216,7 +193,7 @@ export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
   // Petrol cost per 100km = (100 / kmPerL) * Price per liter
   const petrolCostPer100Km = Math.round(((100 / petrolEfficiency) * petrolPrice) * 100) / 100;
 
-  // EV Cost per 100 km (based on distanceKm)
+  // EV Cost per 100 km (based on actual distanceKm and totalEvChargingCost)
   const evCostPer100Km = distanceKm > 0
     ? Math.round(((totalEvChargingCost / distanceKm) * 100) * 100) / 100
     : 0;

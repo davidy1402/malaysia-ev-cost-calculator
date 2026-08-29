@@ -7,6 +7,7 @@ import { ShowroomInputCard } from './components/ShowroomInputCard';
 import { SavingsHeroCard } from './components/SavingsHeroCard';
 import { CostPer100KmComparison } from './components/CostPer100KmComparison';
 import { TnbBreakdownCard } from './components/TnbBreakdownCard';
+import { ThresholdJumpExplainerCard } from './components/ThresholdJumpExplainerCard';
 import { AdvancedSettingsDrawer } from './components/AdvancedSettingsDrawer';
 import { ShareReportModal } from './components/ShareReportModal';
 
@@ -71,6 +72,11 @@ export function App() {
         {/* TNB bill breakdown */}
         <section className="mb-8">
           <TnbBreakdownCard inputs={inputs} result={result} />
+        </section>
+
+        {/* 600 kWh Threshold Jump Deep-Dive */}
+        <section className="mb-8">
+          <ThresholdJumpExplainerCard inputs={inputs} result={result} />
         </section>
       </main>
 

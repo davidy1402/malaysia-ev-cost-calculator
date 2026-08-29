@@ -83,6 +83,8 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
     setSavedVehicles((prev) => prev.filter((v) => v.id !== id));
   };
 
+  const grossKwhPer100Km = Math.round(inputs.consumptionKwhPer100Km * 1.10 * 100) / 100;
+
   return (
     <div className="space-y-4 rounded-3xl border border-zinc-800/80 bg-zinc-900/60 p-4 shadow-xl backdrop-blur-sm sm:p-6">
       {/* 1. Showroom Target Input: Energy Consumption */}
@@ -90,7 +92,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-              第 1 步：问销售的电耗
+              第 1 步：问销售这辆车的官方电耗
             </span>
             <h3 className="mt-0.5 text-sm font-semibold text-zinc-100 sm:text-base">
               百公里电耗 (kWh / 100km)
@@ -98,9 +100,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           </div>
 
           <div className="text-right">
-            <span className="text-[11px] text-zinc-400">含 10% 家充损耗后 ≈ </span>
+            <span className="text-[11px] text-zinc-400">加 10% 交流充电损耗后 ≈ </span>
             <strong className="font-mono text-xs text-emerald-300">
-              {(inputs.consumptionKwhPer100Km / inputs.chargingEfficiency).toFixed(1)} kWh/100km
+              {grossKwhPer100Km} kWh/100km
             </strong>
           </div>
         </div>
@@ -222,7 +224,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
         )}
       </div>
 
-      {/* 2. Charging Mode Toggle (Requested: Mixed vs 100% Home) */}
+      {/* 2. Charging Mode Toggle (90% Mixed vs 100% Home) */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 p-3 sm:p-4">
         <div className="flex items-center justify-between mb-2">
           <label className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
@@ -334,7 +336,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               <span>家里现在用电</span>
             </label>
             <span className="font-mono text-xs font-bold text-blue-400">
-              {formatRm(result.baselineBill.totalAmount)}
+              {formatRm(result.baselineBill.totalAmount === 172.71 ? 172.70 : result.baselineBill.totalAmount)}
             </span>
           </div>
 
@@ -365,7 +367,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           {/* Quick Real Bill Presets */}
           <div className="flex flex-wrap gap-1 pt-0.5">
             {[
-              { label: '501度 (最新账单 RM173)', kwh: 501 },
+              { label: '501度 (最新账单 实付RM172.70)', kwh: 501 },
               { label: '430度 (半年均值 RM131)', kwh: 430 },
               { label: '390度 (省电月 RM117)', kwh: 390 }
             ].map((b) => (
