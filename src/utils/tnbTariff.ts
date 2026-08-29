@@ -1,4 +1,5 @@
 import { UserInputs, TnbBillBreakdown, EvCalculationResult } from '../types/calculator';
+import { calculateEvRoadTax, calculatePetrolRoadTax } from './roadTax';
 
 /**
  * Returns the EEI (Energy Efficiency Incentive) Rebate in sen/kWh
@@ -212,6 +213,14 @@ export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
   const yearlyNetSavings = Math.round((monthlyNetSavings * 12) * 100) / 100;
   const fiveYearNetSavings = Math.round((yearlyNetSavings * 5) * 100) / 100;
 
+  // Road Tax 2026 Calculations
+  const evMotorKw = inputs.motorPowerKw || 160;
+  const petrolCc = inputs.petrolEngineCc || 1500;
+  const evRoadTaxAnnualRm = calculateEvRoadTax(evMotorKw).roadTaxRm;
+  const petrolRoadTaxAnnualRm = calculatePetrolRoadTax(petrolCc).roadTaxRm;
+  const annualRoadTaxDifferenceRm = petrolRoadTaxAnnualRm - evRoadTaxAnnualRm;
+  const fiveYearTcoWithRoadTaxSavings = fiveYearNetSavings + (annualRoadTaxDifferenceRm * 5);
+
   // 600 kWh Threshold Jump Alert
   const crossed600Threshold = baselineBill.kwh <= 600 && newCombinedBill.kwh > 600;
   
@@ -243,6 +252,10 @@ export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
     fiveYearNetSavings,
     evCostPer100Km,
     savingsRatioPerKm,
+    evRoadTaxAnnualRm,
+    petrolRoadTaxAnnualRm,
+    annualRoadTaxDifferenceRm,
+    fiveYearTcoWithRoadTaxSavings,
     crossed600Threshold,
     thresholdJumpPenaltyRm
   };

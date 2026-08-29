@@ -2,6 +2,8 @@ export interface SavedVehicle {
   id: string;
   name: string;
   consumptionKwhPer100Km: number;
+  motorPowerKw?: number;
+  batteryCapacityKwh?: number;
   savedAt: number;
 }
 
@@ -11,6 +13,7 @@ export interface VehiclePreset {
   brand: string;
   consumptionKwhPer100Km: number;
   batteryCapacityKwh: number;
+  motorPowerKw: number;
   claimedRangeWltpKm: number;
   priceEstimateRm: string;
   tag?: string;
@@ -19,10 +22,12 @@ export interface VehiclePreset {
 export interface UserInputs {
   modelName: string;
   consumptionKwhPer100Km: number;
+  motorPowerKw: number; // e.g. 160 kW for Proton e.MAS 7
   monthlyMileageKm: number;
   baselineHomeKwh: number; // 默认 501 kWh（David 家最新 TNB 真实账单）
   baselineHomeBillRm: number; // 对应计算出的账单金额（如 RM 172.70）
   fatherPetrolCostRm: number; // 爸爸每月固定油费 RM 210
+  petrolEngineCc: number; // 默认 1500 cc (1.5L ICE)
 
   // 充电模式切换: 'mixed' (90%家充+10%外充) vs 'home_only' (100%全家充)
   chargingMode: 'mixed' | 'home_only';
@@ -97,7 +102,13 @@ export interface EvCalculationResult {
   evCostPer100Km: number;
   savingsRatioPerKm: number; // percentage cheaper than petrol
 
+  // Road Tax Metrics (2026 Malaysia JPJ Official Structure)
+  evRoadTaxAnnualRm: number;
+  petrolRoadTaxAnnualRm: number;
+  annualRoadTaxDifferenceRm: number;
+  fiveYearTcoWithRoadTaxSavings: number;
+
   // Threshold alerts
   crossed600Threshold: boolean;
-  thresholdJumpPenaltyRm: number; // additional cost caused by losing 600kWh waiver
+  thresholdJumpPenaltyRm: number;
 }

@@ -5,7 +5,9 @@ import { calculateAllEvMetrics } from './utils/tnbTariff';
 import { Navbar } from './components/Navbar';
 import { ShowroomInputCard } from './components/ShowroomInputCard';
 import { SavingsHeroCard } from './components/SavingsHeroCard';
+import { MultiCarCompareCard } from './components/MultiCarCompareCard';
 import { CostPer100KmComparison } from './components/CostPer100KmComparison';
+import { RoadTaxComparisonCard } from './components/RoadTaxComparisonCard';
 import { TnbBreakdownCard } from './components/TnbBreakdownCard';
 import { ThresholdJumpExplainerCard } from './components/ThresholdJumpExplainerCard';
 import { AdvancedSettingsDrawer } from './components/AdvancedSettingsDrawer';
@@ -56,27 +58,37 @@ function AppContent() {
       />
 
       <main className="mx-auto w-full max-w-3xl px-4 pb-20 pt-8 sm:px-6 sm:pt-10">
-        {/* 01 — Showroom inputs */}
+        {/* 01 — Showroom Target Inputs */}
         <section className="mb-8">
           <ShowroomInputCard inputs={inputs} result={result} onChange={handleUpdateInputs} />
         </section>
 
-        {/* Verdict hero */}
+        {/* 02 — Verdict Hero Card */}
         <section className="mb-8">
           <SavingsHeroCard inputs={inputs} result={result} />
         </section>
 
-        {/* Per-100km comparison */}
+        {/* 03 — Multi-Car Side-by-Side Comparison */}
+        <section className="mb-8">
+          <MultiCarCompareCard inputs={inputs} result={result} />
+        </section>
+
+        {/* 04 — Per-100km & Trip Scenarios */}
         <section className="mb-8">
           <CostPer100KmComparison inputs={inputs} result={result} />
         </section>
 
-        {/* TNB bill breakdown */}
+        {/* 05 — 2026 Malaysia JPJ Official EV Road Tax Comparison */}
+        <section className="mb-8">
+          <RoadTaxComparisonCard inputs={inputs} result={result} onChange={handleUpdateInputs} />
+        </section>
+
+        {/* 06 — Real TNB Itemized Bill Breakdown */}
         <section className="mb-8">
           <TnbBreakdownCard inputs={inputs} result={result} />
         </section>
 
-        {/* 600 kWh Threshold Jump Deep-Dive */}
+        {/* 07 — 600 kWh Threshold Jump Deep-Dive */}
         <section className="mb-8">
           <ThresholdJumpExplainerCard inputs={inputs} result={result} />
         </section>
