@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ————————————————————————————————————————————————
-   Elite Design Tokens — Minimalist Editorial & Dark Tech
+   Elite Design Tokens — Minimalist Editorial & Automotive Clean
    Precision engineered with Spring Physics & Doppelrand Architecture
 ———————————————————————————————————————————————— */
 :root {
@@ -20,17 +20,17 @@
   --brand: #059669;
   --brand-strong: #047857;
   --onbrand: #ffffff;
-  --brand-soft: rgba(5, 150, 105, 0.1);
-  --brand-glow: rgba(5, 150, 105, 0.25);
+  --brand-soft: rgba(5, 150, 105, 0.08);
+  --brand-glow: rgba(5, 150, 105, 0.2);
 
   --oil: #d97706;
-  --oil-soft: rgba(217, 119, 6, 0.1);
+  --oil-soft: rgba(217, 119, 6, 0.08);
 
   --grid: #2563eb;
-  --grid-soft: rgba(37, 99, 235, 0.1);
+  --grid-soft: rgba(37, 99, 235, 0.08);
 
   --warn: #ea580c;
-  --warn-soft: rgba(234, 88, 12, 0.1);
+  --warn-soft: rgba(234, 88, 12, 0.08);
 
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -41,8 +41,8 @@
   --surface: #121412;
   --surface-raised: #181c18;
   --inset: #0c0e0c;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.15);
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.14);
   --ink: #f8fafc;
   --muted: #94a3b8;
   --faint: #475569;
@@ -50,17 +50,17 @@
   --brand: #10b981;
   --brand-strong: #34d399;
   --onbrand: #06231a;
-  --brand-soft: rgba(16, 185, 129, 0.12);
-  --brand-glow: rgba(16, 185, 129, 0.35);
+  --brand-soft: rgba(16, 185, 129, 0.1);
+  --brand-glow: rgba(16, 185, 129, 0.3);
 
   --oil: #f59e0b;
-  --oil-soft: rgba(245, 158, 11, 0.12);
+  --oil-soft: rgba(245, 158, 11, 0.1);
 
   --grid: #3b82f6;
-  --grid-soft: rgba(59, 130, 246, 0.12);
+  --grid-soft: rgba(59, 130, 246, 0.1);
 
   --warn: #f97316;
-  --warn-soft: rgba(249, 115, 22, 0.12);
+  --warn-soft: rgba(249, 115, 22, 0.1);
 }
 
 @theme inline {
@@ -92,10 +92,20 @@
 @layer base {
   * {
     font-feature-settings: "cv02" 1, "cv03" 1, "cv04" 1, "cv11" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .font-mono, [data-tabular] {
     font-feature-settings: "tnum" 1, "zero" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   html {
@@ -114,21 +124,21 @@
 ———————————————————————————————————————————————— */
 .doppelrand-shell {
   padding: 0.375rem;
-  border-radius: 1.75rem;
+  border-radius: 1.5rem;
   background: var(--surface);
   border: 1px solid var(--line);
-  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: all 0.35s var(--ease-spring);
 }
 
 .dark .doppelrand-shell {
   background: #111311;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .doppelrand-core {
-  border-radius: calc(1.75rem - 0.375rem);
+  border-radius: calc(1.5rem - 0.375rem);
   background: var(--paper);
   border: 1px solid var(--line);
   padding: 1.25rem;
@@ -136,26 +146,32 @@
 
 .dark .doppelrand-core {
   background: #090a09;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 640px) {
+  .doppelrand-core {
+    padding: 1rem;
+  }
 }
 
 /* Glass Floating Navbar */
 .glass-island {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   border: 1px solid var(--line);
 }
 
 .dark .glass-island {
-  background: rgba(14, 16, 14, 0.82);
+  background: rgba(14, 16, 14, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85);
 }
 
 /* Spring interactive button */
 .btn-spring {
-  transition: transform 0.25s var(--ease-bounce), background-color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.25s var(--ease-bounce), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-spring:hover {
@@ -164,4 +180,13 @@
 
 .btn-spring:active {
   transform: translateY(1px) scale(0.98);
+}
+
+/* Hide scrollbar for clean horizontal chip carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

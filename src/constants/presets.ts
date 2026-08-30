@@ -10,7 +10,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 160,
     claimedRangeWltpKm: 410,
     priceEstimateRm: '~RM 108k - 120k',
-    tag: '⭐ 试驾焦点'
+    tag: 'Focus'
   },
   {
     id: 'emas-5',
@@ -21,7 +21,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 130,
     claimedRangeWltpKm: 350,
     priceEstimateRm: '~RM 80k - 95k',
-    tag: '超高性价比'
+    tag: 'Value'
   },
   {
     id: 'byd-atto3',
@@ -32,7 +32,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 150,
     claimedRangeWltpKm: 420,
     priceEstimateRm: '~RM 149k - 167k',
-    tag: '家庭 SUV'
+    tag: 'SUV'
   },
   {
     id: 'byd-dolphin',
@@ -43,7 +43,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 150,
     claimedRangeWltpKm: 427,
     priceEstimateRm: '~RM 125k',
-    tag: '市区代步王'
+    tag: 'Urban'
   },
   {
     id: 'chery-omoda-e5',
@@ -54,7 +54,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 150,
     claimedRangeWltpKm: 430,
     priceEstimateRm: '~RM 146k',
-    tag: '配置拉满'
+    tag: 'Tech'
   },
   {
     id: 'byd-seal-rwd',
@@ -65,7 +65,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 150,
     claimedRangeWltpKm: 510,
     priceEstimateRm: '~RM 179k',
-    tag: '运动轿跑'
+    tag: 'Sedan'
   },
   {
     id: 'tesla-model3-rwd',
@@ -76,7 +76,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 208,
     claimedRangeWltpKm: 513,
     priceEstimateRm: '~RM 189k',
-    tag: '超高能效'
+    tag: 'Efficiency'
   },
   {
     id: 'smart-1-pro',
@@ -87,7 +87,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 200,
     claimedRangeWltpKm: 315,
     priceEstimateRm: '~RM 189k',
-    tag: '潮酷精品'
+    tag: 'Compact'
   },
   {
     id: 'zeekr-x',
@@ -98,7 +98,7 @@ export const POPULAR_EV_PRESETS: VehiclePreset[] = [
     motorPowerKw: 200,
     claimedRangeWltpKm: 440,
     priceEstimateRm: '~RM 180k',
-    tag: '豪华轻奢'
+    tag: 'Luxury'
   }
 ];
 

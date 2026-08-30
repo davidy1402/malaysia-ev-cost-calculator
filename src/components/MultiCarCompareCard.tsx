@@ -72,7 +72,7 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
 
           {/* Winner Badge */}
           {fiveYearSavingsDiff !== 0 && (
-            <div className="flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-soft px-3 py-1 text-xs font-bold text-brand shadow-sm">
+            <div className="flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-soft px-3 py-1 text-xs font-bold text-brand shadow-sm whitespace-nowrap">
               <Sparkles size={12} strokeWidth={2.25} />
               <span>
                 {fiveYearSavingsDiff > 0
@@ -83,13 +83,17 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
           )}
         </div>
 
-        {/* Car Selector for Car B */}
+        {/* Car Selector for Car B - Scrollable on mobile */}
         <div className="space-y-1.5">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-muted flex items-center justify-between">
-            <span>{t.multiCar.selectPrompt}</span>
-            <span className="text-[10px] text-faint font-normal">点击切换对比车型</span>
-          </label>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-muted">
+              {t.multiCar.selectPrompt}
+            </label>
+            <span className="text-[10px] text-faint hidden sm:inline">
+              左右滑动选择车型
+            </span>
+          </div>
+          <div className="flex overflow-x-auto no-scrollbar gap-1.5 py-0.5 -mx-1 px-1">
             {POPULAR_EV_PRESETS.map((preset) => {
               const isSelected = carBPreset.id === preset.id;
               return (
@@ -97,7 +101,7 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
                   key={preset.id}
                   type="button"
                   onClick={() => handleSelectPresetB(preset)}
-                  className={`flex items-center gap-1.5 rounded-xl border px-2.5 py-1 text-xs font-medium btn-spring ${
+                  className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-2.5 py-1 text-xs font-medium btn-spring whitespace-nowrap ${
                     isSelected
                       ? 'border-brand bg-brand text-onbrand shadow-sm font-semibold'
                       : 'border-line bg-surface/80 text-muted hover:border-line-strong hover:text-ink'
@@ -122,9 +126,9 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
                 <span className="text-[10px] font-bold uppercase tracking-wider text-muted block">
                   {t.multiCar.carA}
                 </span>
-                <h4 className="text-sm font-bold text-ink">{inputs.modelName.trim() || 'Car A'}</h4>
+                <h4 className="text-sm font-bold text-ink whitespace-nowrap">{inputs.modelName.trim() || 'Car A'}</h4>
               </div>
-              <span className="rounded-lg bg-paper px-2 py-0.5 font-mono text-xs font-bold text-muted border border-line">
+              <span className="rounded-lg bg-paper px-2 py-0.5 font-mono text-xs font-bold text-muted border border-line whitespace-nowrap">
                 {inputs.consumptionKwhPer100Km} kWh
               </span>
             </div>
@@ -132,27 +136,27 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
             <div className="space-y-2 text-xs divide-y divide-line/60 font-mono">
               <div className="flex items-center justify-between pt-1">
                 <span className="font-sans text-muted">{t.multiCar.metricPower}</span>
-                <span className="text-ink font-semibold">{inputs.motorPowerKw || 160} kW (RM {resultA.evRoadTaxAnnualRm}/年)</span>
+                <span className="text-ink font-semibold whitespace-nowrap">{inputs.motorPowerKw || 160} kW (RM {resultA.evRoadTaxAnnualRm}/年)</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricBattery}</span>
-                <span className="text-ink font-semibold">{inputs.batteryCapacityKwh || 60.22} kWh</span>
+                <span className="text-ink font-semibold whitespace-nowrap">{inputs.batteryCapacityKwh || 60.22} kWh</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricCost100km}</span>
-                <span className="font-bold text-brand">{formatRm(resultA.evCostPer100Km)}</span>
+                <span className="font-bold text-brand whitespace-nowrap">{formatRm(resultA.evCostPer100Km)}</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricMonthlyTnb}</span>
-                <span className="text-ink font-semibold">{formatRm(resultA.newCombinedBill.totalAmount)} (+{formatRm(resultA.marginalHomeElectricityCost)})</span>
+                <span className="text-ink font-semibold whitespace-nowrap">{formatRm(resultA.newCombinedBill.totalAmount)} (+{formatRm(resultA.marginalHomeElectricityCost)})</span>
               </div>
               <div className="flex items-center justify-between pt-1.5 bg-paper/60 p-2 rounded-xl">
                 <span className="font-sans font-bold text-ink">{t.multiCar.metricMonthlySavings}</span>
-                <span className="font-extrabold text-brand text-sm">{formatRm(resultA.monthlyNetSavings)}</span>
+                <span className="font-extrabold text-brand text-sm whitespace-nowrap">{formatRm(resultA.monthlyNetSavings)}</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricFiveYearSavings}</span>
-                <span className="font-bold text-ink">{formatRm(resultA.fiveYearTcoWithRoadTaxSavings)}</span>
+                <span className="font-bold text-ink whitespace-nowrap">{formatRm(resultA.fiveYearTcoWithRoadTaxSavings)}</span>
               </div>
             </div>
           </div>
@@ -164,9 +168,9 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
                 <span className="text-[10px] font-bold uppercase tracking-wider text-brand block">
                   {t.multiCar.carB}
                 </span>
-                <h4 className="text-sm font-bold text-brand">{carBPreset.name}</h4>
+                <h4 className="text-sm font-bold text-brand whitespace-nowrap">{carBPreset.name}</h4>
               </div>
-              <span className="rounded-lg bg-brand-soft px-2 py-0.5 font-mono text-xs font-bold text-brand border border-brand/25">
+              <span className="rounded-lg bg-brand-soft px-2 py-0.5 font-mono text-xs font-bold text-brand border border-brand/25 whitespace-nowrap">
                 {carBPreset.consumptionKwhPer100Km} kWh
               </span>
             </div>
@@ -174,27 +178,27 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
             <div className="space-y-2 text-xs divide-y divide-line/60 font-mono">
               <div className="flex items-center justify-between pt-1">
                 <span className="font-sans text-muted">{t.multiCar.metricPower}</span>
-                <span className="text-ink font-semibold">{carBPreset.motorPowerKw} kW (RM {resultB.evRoadTaxAnnualRm}/年)</span>
+                <span className="text-ink font-semibold whitespace-nowrap">{carBPreset.motorPowerKw} kW (RM {resultB.evRoadTaxAnnualRm}/年)</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricBattery}</span>
-                <span className="text-ink font-semibold">{carBPreset.batteryCapacityKwh} kWh ({carBPreset.claimedRangeWltpKm} km)</span>
+                <span className="text-ink font-semibold whitespace-nowrap">{carBPreset.batteryCapacityKwh} kWh ({carBPreset.claimedRangeWltpKm} km)</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricCost100km}</span>
-                <span className="font-bold text-brand">{formatRm(resultB.evCostPer100Km)}</span>
+                <span className="font-bold text-brand whitespace-nowrap">{formatRm(resultB.evCostPer100Km)}</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricMonthlyTnb}</span>
-                <span className="text-ink font-semibold">{formatRm(resultB.newCombinedBill.totalAmount)} (+{formatRm(resultB.marginalHomeElectricityCost)})</span>
+                <span className="text-ink font-semibold whitespace-nowrap">{formatRm(resultB.newCombinedBill.totalAmount)} (+{formatRm(resultB.marginalHomeElectricityCost)})</span>
               </div>
               <div className="flex items-center justify-between pt-1.5 bg-brand-soft/70 border border-brand/20 p-2 rounded-xl">
                 <span className="font-sans font-bold text-brand">{t.multiCar.metricMonthlySavings}</span>
-                <span className="font-extrabold text-brand text-sm">{formatRm(resultB.monthlyNetSavings)}</span>
+                <span className="font-extrabold text-brand text-sm whitespace-nowrap">{formatRm(resultB.monthlyNetSavings)}</span>
               </div>
               <div className="flex items-center justify-between pt-1.5">
                 <span className="font-sans text-muted">{t.multiCar.metricFiveYearSavings}</span>
-                <span className="font-bold text-brand">{formatRm(resultB.fiveYearTcoWithRoadTaxSavings)}</span>
+                <span className="font-bold text-brand whitespace-nowrap">{formatRm(resultB.fiveYearTcoWithRoadTaxSavings)}</span>
               </div>
             </div>
           </div>
@@ -212,7 +216,7 @@ export const MultiCarCompareCard: React.FC<MultiCarCompareCardProps> = ({
                   : t.multiCar.diffEqual}
             </span>
           </div>
-          <span className="font-mono text-xs font-bold text-brand">
+          <span className="font-mono text-xs font-bold text-brand whitespace-nowrap">
             5年综合差距：{formatRm(Math.abs(fiveYearSavingsDiff))}
           </span>
         </div>

@@ -95,7 +95,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
   return (
     <div className="doppelrand-shell">
       <div className="doppelrand-core space-y-4">
-        {/* 1. Main Showroom Energy Consumption Hero Input */}
+        {/* 1. Main Energy Consumption Hero Input */}
         <div className="rounded-2xl border border-brand/25 bg-brand-soft/40 p-4 sm:p-5 relative overflow-hidden">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -114,7 +114,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
 
             <div className="text-right">
               <span className="text-[11px] text-muted">{t.showroom.lossNote}</span>
-              <strong className="font-mono text-xs font-bold text-brand">
+              <strong className="font-mono text-xs font-bold text-brand whitespace-nowrap">
                 {grossKwhPer100Km} kWh/100km
               </strong>
             </div>
@@ -135,26 +135,26 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                   onChange({ consumptionKwhPer100Km: isNaN(val) ? 0 : val });
                 }}
                 placeholder="14.5"
-                className="w-full rounded-2xl border border-brand/35 bg-surface/90 px-4 py-3.5 pr-32 text-3xl sm:text-4xl font-bold font-mono text-brand placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
+                className="w-full rounded-2xl border border-brand/35 bg-surface/90 px-4 py-3.5 pr-28 sm:pr-32 text-3xl sm:text-4xl font-bold font-mono text-brand placeholder:text-faint focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 shadow-inner"
               />
-              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted">
+              <span className="pointer-events-none absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[11px] sm:text-xs font-semibold text-muted whitespace-nowrap">
                 kWh / 100 km
               </span>
             </div>
 
             {/* Quick Step Adjusters */}
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1.5 shrink-0">
               <button
                 type="button"
                 onClick={() => onChange({ consumptionKwhPer100Km: Math.round((inputs.consumptionKwhPer100Km + 0.5) * 10) / 10 })}
-                className="flex h-8 w-12 items-center justify-center rounded-xl border border-line bg-surface font-mono text-xs font-bold text-ink btn-spring hover:border-line-strong active:scale-95"
+                className="flex h-8 w-11 sm:w-12 items-center justify-center rounded-xl border border-line bg-surface font-mono text-xs font-bold text-ink btn-spring hover:border-line-strong active:scale-95"
               >
                 +0.5
               </button>
               <button
                 type="button"
                 onClick={() => onChange({ consumptionKwhPer100Km: Math.max(5, Math.round((inputs.consumptionKwhPer100Km - 0.5) * 10) / 10) })}
-                className="flex h-8 w-12 items-center justify-center rounded-xl border border-line bg-surface font-mono text-xs font-bold text-ink btn-spring hover:border-line-strong active:scale-95"
+                className="flex h-8 w-11 sm:w-12 items-center justify-center rounded-xl border border-line bg-surface font-mono text-xs font-bold text-ink btn-spring hover:border-line-strong active:scale-95"
               >
                 −0.5
               </button>
@@ -177,7 +177,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               type="button"
               onClick={handleSaveVehicle}
               disabled={!canSave}
-              className={`flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold btn-spring ${
+              className={`flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold btn-spring whitespace-nowrap ${
                 justSaved
                   ? 'bg-brand text-onbrand'
                   : canSave
@@ -199,12 +199,17 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             </button>
           </div>
 
-          {/* Preset Quick Chips */}
+          {/* Preset Quick Chips - Scrollable Bar on Mobile */}
           <div className="mt-3 pt-2.5 border-t border-brand/15">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted block mb-1.5">
-              展厅热门车型一键填入 (Quick Presets)
-            </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
+                车型快速配置 (Quick Presets)
+              </span>
+              <span className="text-[10px] text-faint hidden sm:inline">
+                左右滑动查看更多
+              </span>
+            </div>
+            <div className="flex overflow-x-auto no-scrollbar gap-1.5 py-0.5 -mx-1 px-1">
               {POPULAR_EV_PRESETS.map((preset) => {
                 const isActive = inputs.modelName.trim().toLowerCase() === preset.name.toLowerCase();
                 return (
@@ -219,9 +224,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                         batteryCapacityKwh: preset.batteryCapacityKwh
                       })
                     }
-                    className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium btn-spring ${
+                    className={`flex shrink-0 items-center gap-1.5 rounded-xl border px-2.5 py-1 text-xs font-medium btn-spring whitespace-nowrap ${
                       isActive
-                        ? 'border-brand bg-brand text-onbrand shadow-sm'
+                        ? 'border-brand bg-brand text-onbrand shadow-sm font-semibold'
                         : 'border-line bg-surface/90 text-muted hover:border-line-strong hover:text-ink'
                     }`}
                   >
@@ -235,15 +240,15 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             </div>
           </div>
 
-          {/* Saved vehicles chips */}
+          {/* Saved Vehicles Chips */}
           {savedVehicles.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
+            <div className="mt-2 flex overflow-x-auto no-scrollbar gap-1.5 py-0.5">
               {savedVehicles.map((v) => {
                 const isActive = inputs.modelName.trim().toLowerCase() === v.name.toLowerCase();
                 return (
                   <span
                     key={v.id}
-                    className={`flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium ${
+                    className={`flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${
                       isActive
                         ? 'border-brand bg-brand-soft text-brand font-semibold'
                         : 'border-line bg-surface text-muted'
@@ -286,7 +291,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               <BatteryCharging size={15} strokeWidth={1.75} className="text-brand" />
               <span>{t.showroom.chargingModeLabel}</span>
             </label>
-            <span className="text-[11px] text-muted">
+            <span className="text-[11px] text-muted hidden sm:inline">
               {inputs.chargingMode === 'mixed' ? t.showroom.chargingModeMixedSub : t.showroom.chargingModeHomeSub}
             </span>
           </div>
@@ -301,8 +306,8 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                   : 'border border-line bg-paper/60 text-muted hover:border-line-strong hover:text-ink'
               }`}
             >
-              <span className="text-xs sm:text-sm font-semibold">{t.showroom.mixedModeBtnTitle}</span>
-              <span className="text-[10px] text-muted mt-0.5">{t.showroom.mixedModeBtnSub}</span>
+              <span className="text-xs sm:text-sm font-semibold whitespace-nowrap">{t.showroom.mixedModeBtnTitle}</span>
+              <span className="text-[10px] text-muted mt-0.5 text-center line-clamp-1">{t.showroom.mixedModeBtnSub}</span>
             </button>
 
             <button
@@ -314,8 +319,8 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                   : 'border border-line bg-paper/60 text-muted hover:border-line-strong hover:text-ink'
               }`}
             >
-              <span className="text-xs sm:text-sm font-semibold">{t.showroom.homeOnlyBtnTitle}</span>
-              <span className="text-[10px] text-muted mt-0.5">{t.showroom.homeOnlyBtnSub}</span>
+              <span className="text-xs sm:text-sm font-semibold whitespace-nowrap">{t.showroom.homeOnlyBtnTitle}</span>
+              <span className="text-[10px] text-muted mt-0.5 text-center line-clamp-1">{t.showroom.homeOnlyBtnSub}</span>
             </button>
           </div>
         </div>
@@ -329,9 +334,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 <span className={`${iconChip} bg-brand-soft text-brand`}>
                   <Gauge size={13} strokeWidth={2} />
                 </span>
-                <span>{t.showroom.monthlyMileageLabel}</span>
+                <span className="whitespace-nowrap">{t.showroom.monthlyMileageLabel}</span>
               </label>
-              <span className="font-mono text-xs font-bold text-brand">
+              <span className="font-mono text-xs font-bold text-brand whitespace-nowrap">
                 {inputs.monthlyMileageKm.toLocaleString()} km
               </span>
             </div>
@@ -360,7 +365,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
               <button
                 type="button"
                 onClick={() => onChange({ monthlyMileageKm: result.petrolEquivalentDistanceKm })}
-                className="rounded px-2 py-0.5 text-[10px] font-semibold bg-brand-soft text-brand border border-brand/20 btn-spring"
+                className="rounded-lg px-2 py-0.5 text-[10px] font-semibold bg-brand-soft text-brand border border-brand/20 btn-spring whitespace-nowrap"
               >
                 {t.showroom.alignPetrolBtn.replace('{km}', result.petrolEquivalentDistanceKm.toString())}
               </button>
@@ -369,7 +374,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                   key={km}
                   type="button"
                   onClick={() => onChange({ monthlyMileageKm: km })}
-                  className={`rounded px-1.5 py-0.5 text-[10px] font-mono font-medium btn-spring ${
+                  className={`rounded-lg px-1.5 py-0.5 text-[10px] font-mono font-medium btn-spring whitespace-nowrap ${
                     inputs.monthlyMileageKm === km
                       ? 'bg-ink text-paper font-semibold'
                       : 'bg-paper text-muted hover:text-ink border border-line'
@@ -388,9 +393,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 <span className={`${iconChip} bg-grid-soft text-grid`}>
                   <Home size={13} strokeWidth={2} />
                 </span>
-                <span>{t.showroom.homeElectricityLabel}</span>
+                <span className="whitespace-nowrap">{t.showroom.homeElectricityLabel}</span>
               </label>
-              <span className="font-mono text-xs font-bold text-grid">
+              <span className="font-mono text-xs font-bold text-grid whitespace-nowrap">
                 {formatRm(result.baselineBill.totalAmount === 172.71 ? 172.70 : result.baselineBill.totalAmount)}
               </span>
             </div>
@@ -430,7 +435,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                   key={b.kwh}
                   type="button"
                   onClick={() => onChange({ baselineHomeKwh: b.kwh })}
-                  className={`rounded px-1.5 py-0.5 text-[10px] font-medium btn-spring ${
+                  className={`rounded-lg px-1.5 py-0.5 text-[10px] font-medium btn-spring whitespace-nowrap ${
                     inputs.baselineHomeKwh === b.kwh
                       ? 'bg-grid-soft text-grid border border-grid/30 font-semibold'
                       : 'bg-paper text-muted hover:text-ink border border-line'
@@ -449,9 +454,9 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 <span className={`${iconChip} bg-oil-soft text-oil`}>
                   <Fuel size={13} strokeWidth={2} />
                 </span>
-                <span>{t.showroom.fatherPetrolLabel}</span>
+                <span className="whitespace-nowrap">{t.showroom.fatherPetrolLabel}</span>
               </label>
-              <span className="font-mono text-xs font-bold text-oil">
+              <span className="font-mono text-xs font-bold text-oil whitespace-nowrap">
                 @ RM {inputs.petrolPricePerLiter.toFixed(2)}/L
               </span>
             </div>
@@ -482,7 +487,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 <button
                   type="button"
                   onClick={() => onChange({ petrolPricePerLiter: 1.99 })}
-                  className={`rounded px-1.5 py-0.5 text-[9px] font-semibold btn-spring ${
+                  className={`rounded px-1.5 py-0.5 text-[9px] font-semibold btn-spring whitespace-nowrap ${
                     inputs.petrolPricePerLiter === 1.99
                       ? 'bg-oil-soft text-oil border border-oil/30'
                       : 'bg-paper text-muted border border-line'
@@ -493,7 +498,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 <button
                   type="button"
                   onClick={() => onChange({ petrolPricePerLiter: 2.05 })}
-                  className={`rounded px-1.5 py-0.5 text-[9px] font-semibold btn-spring ${
+                  className={`rounded px-1.5 py-0.5 text-[9px] font-semibold btn-spring whitespace-nowrap ${
                     inputs.petrolPricePerLiter === 2.05
                       ? 'bg-oil-soft text-oil border border-oil/30'
                       : 'bg-paper text-muted border border-line'
@@ -502,7 +507,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                   RM 2.05/L
                 </button>
               </div>
-              <span className="font-mono text-ink font-semibold">
+              <span className="font-mono text-ink font-semibold whitespace-nowrap">
                 {(inputs.fatherPetrolCostRm / inputs.petrolPricePerLiter).toFixed(1)} {t.showroom.petrolUnit}
               </span>
             </div>

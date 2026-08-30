@@ -42,7 +42,7 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
                 <h3 className="text-sm font-bold text-ink">
                   {t.roadTax.title}
                 </h3>
-                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand border border-brand/20">
+                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand border border-brand/20 whitespace-nowrap">
                   {t.roadTax.officialGovBadge}
                 </span>
               </div>
@@ -55,7 +55,7 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
           <button
             type="button"
             onClick={() => setIsDetailsOpen(!isDetailsOpen)}
-            className="flex items-center gap-1 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-muted btn-spring hover:border-line-strong hover:text-ink shadow-sm"
+            className="flex items-center gap-1 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-muted btn-spring hover:border-line-strong hover:text-ink shadow-sm whitespace-nowrap"
           >
             <span>{isDetailsOpen ? '收起政策解读' : '查看政策解读'}</span>
             {isDetailsOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -68,13 +68,13 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
           <div className="space-y-2.5 rounded-2xl border border-line bg-surface p-4 shadow-sm">
             <div className="flex items-center justify-between border-b border-line pb-2">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-oil">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-oil block">
                   {t.roadTax.iceTitle}
                 </span>
-                <h4 className="text-xs font-semibold text-ink">{petrolCc} cc ({petrolRoadTaxInfo.engineBand})</h4>
+                <h4 className="text-xs font-semibold text-ink whitespace-nowrap">{petrolCc} cc ({petrolRoadTaxInfo.engineBand})</h4>
               </div>
               <div className="text-right">
-                <span className="font-mono text-lg font-bold text-oil">
+                <span className="font-mono text-lg font-bold text-oil whitespace-nowrap">
                   {formatRm(result.petrolRoadTaxAnnualRm)}
                 </span>
                 <span className="text-[10px] text-faint block">/ 年</span>
@@ -82,14 +82,14 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-xs font-mono text-muted pt-0.5">
-              <span className="font-sans text-[11px]">排量档位</span>
+              <span className="font-sans text-[11px] whitespace-nowrap">排量档位</span>
               <div className="flex items-center gap-1">
                 {[1500, 1800, 2000].map((cc) => (
                   <button
                     key={cc}
                     type="button"
                     onClick={() => onChange?.({ petrolEngineCc: cc })}
-                    className={`rounded px-2 py-0.5 text-[10px] font-medium btn-spring ${
+                    className={`rounded px-2 py-0.5 text-[10px] font-medium btn-spring whitespace-nowrap ${
                       petrolCc === cc
                         ? 'bg-oil-soft text-oil border border-oil/30 font-bold'
                         : 'bg-paper text-muted hover:text-ink border border-line'
@@ -106,15 +106,15 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
           <div className="space-y-2.5 rounded-2xl border border-brand/35 bg-surface p-4 shadow-sm">
             <div className="flex items-center justify-between border-b border-line pb-2">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-brand">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-brand block">
                   {t.roadTax.evTitle}
                 </span>
-                <h4 className="text-xs font-semibold text-brand">
+                <h4 className="text-xs font-semibold text-brand whitespace-nowrap">
                   {inputs.modelName} ({evMotorKw} kW · {evRoadTaxInfo.powerBand})
                 </h4>
               </div>
               <div className="text-right">
-                <span className="font-mono text-lg font-bold text-brand">
+                <span className="font-mono text-lg font-bold text-brand whitespace-nowrap">
                   {formatRm(result.evRoadTaxAnnualRm)}
                 </span>
                 <span className="text-[10px] text-muted block">/ 年</span>
@@ -122,8 +122,8 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-xs font-mono text-muted pt-0.5">
-              <span className="font-sans text-[11px]">计算公式</span>
-              <span className="text-brand font-sans text-[11px] font-semibold">{evRoadTaxInfo.rateDescription}</span>
+              <span className="font-sans text-[11px] whitespace-nowrap">计算公式</span>
+              <span className="text-brand font-sans text-[11px] font-semibold whitespace-nowrap">{evRoadTaxInfo.rateDescription}</span>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
                 .replace('{amount}', formatRm(Math.abs(result.annualRoadTaxDifferenceRm)))}
             </span>
           </div>
-          <span className="font-mono text-xs text-brand font-bold">
+          <span className="font-mono text-xs text-brand font-bold whitespace-nowrap">
             {t.roadTax.tco5yrImpact.replace('{amount}', formatRm(Math.abs(result.annualRoadTaxDifferenceRm * 5)))}
           </span>
         </div>
@@ -154,35 +154,35 @@ export const RoadTaxComparisonCard: React.FC<RoadTaxComparisonCardProps> = ({
               {t.roadTax.whyCheaperDesc}
             </p>
 
-            <div className="overflow-hidden rounded-xl border border-line text-[11px]">
-              <table className="w-full text-left">
-                <thead className="bg-paper text-muted font-bold">
+            <div className="overflow-x-auto no-scrollbar rounded-xl border border-line text-[11px]">
+              <table className="w-full text-left min-w-[320px]">
+                <thead className="bg-paper text-muted font-bold border-b border-line">
                   <tr>
-                    <th className="p-2">功率档位 (kW)</th>
-                    <th className="p-2">2026 新年费</th>
-                    <th className="p-2">代表车型</th>
+                    <th className="p-2.5 whitespace-nowrap">功率档位 (kW)</th>
+                    <th className="p-2.5 whitespace-nowrap">2026 新年费</th>
+                    <th className="p-2.5 whitespace-nowrap">代表车型</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line font-mono text-ink">
                   <tr>
-                    <td className="p-2">100.1 – 150 kW</td>
-                    <td className="p-2 text-brand font-bold">RM 80 – RM 160</td>
-                    <td className="p-2 font-sans">BYD Dolphin, Atto 3, Omoda E5</td>
+                    <td className="p-2.5 whitespace-nowrap">100.1 – 150 kW</td>
+                    <td className="p-2.5 text-brand font-bold whitespace-nowrap">RM 80 – RM 160</td>
+                    <td className="p-2.5 font-sans whitespace-nowrap">BYD Dolphin, Atto 3, Omoda E5</td>
                   </tr>
                   <tr>
-                    <td className="p-2">150.1 – 160 kW</td>
-                    <td className="p-2 text-brand font-bold">RM 180</td>
-                    <td className="p-2 font-sans font-bold text-brand">Proton e.MAS 7 (160 kW)</td>
+                    <td className="p-2.5 whitespace-nowrap">150.1 – 160 kW</td>
+                    <td className="p-2.5 text-brand font-bold whitespace-nowrap">RM 180</td>
+                    <td className="p-2.5 font-sans font-bold text-brand whitespace-nowrap">Proton e.MAS 7 (160 kW)</td>
                   </tr>
                   <tr>
-                    <td className="p-2">200.1 – 210 kW</td>
-                    <td className="p-2 text-brand font-bold">RM 280</td>
-                    <td className="p-2 font-sans">Tesla Model 3 RWD (208 kW)</td>
+                    <td className="p-2.5 whitespace-nowrap">200.1 – 210 kW</td>
+                    <td className="p-2.5 text-brand font-bold whitespace-nowrap">RM 280</td>
+                    <td className="p-2.5 font-sans whitespace-nowrap">Tesla Model 3 RWD (208 kW)</td>
                   </tr>
                   <tr>
-                    <td className="p-2">310.1 – 410 kW</td>
-                    <td className="p-2 text-oil font-bold">RM 615 – RM 1,065</td>
-                    <td className="p-2 font-sans">BYD Seal Performance (390 kW)</td>
+                    <td className="p-2.5 whitespace-nowrap">310.1 – 410 kW</td>
+                    <td className="p-2.5 text-oil font-bold whitespace-nowrap">RM 615 – RM 1,065</td>
+                    <td className="p-2.5 font-sans whitespace-nowrap">BYD Seal Performance (390 kW)</td>
                   </tr>
                 </tbody>
               </table>

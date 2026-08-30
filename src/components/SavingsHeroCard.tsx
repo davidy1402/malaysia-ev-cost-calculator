@@ -21,8 +21,8 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
     if (isPositiveSavings && result.monthlyNetSavings > 15) {
       try {
         confetti({
-          particleCount: 28,
-          spread: 60,
+          particleCount: 24,
+          spread: 50,
           origin: { y: 0.6 },
           colors: ['#10b981', '#059669', '#34d399']
         });
@@ -39,15 +39,15 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
     <div className="space-y-4">
       {/* 1. Master Verdict Card */}
       <div className="doppelrand-shell">
-        <div className="doppelrand-core relative overflow-hidden bg-gradient-to-br from-brand-strong/20 via-surface to-surface border border-brand/20 p-5 sm:p-7">
+        <div className="doppelrand-core relative overflow-hidden bg-gradient-to-br from-brand-strong/15 via-surface to-surface border border-brand/20 p-5 sm:p-7">
           <div className="relative z-10">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold text-brand border border-brand/25">
-                  <Sparkles size={13} strokeWidth={2} />
+                <span className="flex items-center gap-1 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold text-brand border border-brand/20 whitespace-nowrap">
+                  <Sparkles size={12} strokeWidth={2} />
                   <span>{t.verdict.tag}</span>
                 </span>
-                <span className="text-xs font-semibold text-muted">
+                <span className="text-xs font-semibold text-muted line-clamp-1">
                   {headerText}
                 </span>
               </div>
@@ -58,7 +58,7 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
                 {t.verdict.totalExpenseSub}
               </span>
               <div className="mt-1 flex items-baseline gap-2">
-                <span className={`text-3xl sm:text-5xl font-extrabold font-mono tracking-tight ${isPositiveSavings ? 'text-brand' : 'text-oil'}`}>
+                <span className={`text-3xl sm:text-5xl font-extrabold font-mono tracking-tight whitespace-nowrap ${isPositiveSavings ? 'text-brand' : 'text-oil'}`}>
                   {isPositiveSavings
                     ? t.verdict.savesMonthly.replace('{amount}', formatRm(Math.abs(result.monthlyNetSavings)))
                     : t.verdict.costsMoreMonthly.replace('{amount}', formatRm(Math.abs(result.monthlyNetSavings)))}
@@ -112,10 +112,10 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
         {/* Left: Current State */}
         <div className="rounded-2xl border border-line bg-surface p-4 space-y-3 shadow-sm">
           <div className="flex items-center justify-between border-b border-line pb-2.5">
-            <span className="text-xs font-bold text-muted uppercase tracking-wider">
+            <span className="text-xs font-bold text-muted uppercase tracking-wider whitespace-nowrap">
               {t.verdict.currentMonthlyTitle}
             </span>
-            <span className="font-mono text-base font-bold text-ink">
+            <span className="font-mono text-base font-bold text-ink whitespace-nowrap">
               {formatRm(result.oldTotalMonthlyEnergyExpense)}
             </span>
           </div>
@@ -124,17 +124,17 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 font-sans text-muted">
                 <Home size={14} strokeWidth={2} className="text-grid" />
-                <span>{t.verdict.homeBillLabel.replace('{kwh}', result.baselineBill.kwh.toString())}</span>
+                <span className="whitespace-nowrap">{t.verdict.homeBillLabel.replace('{kwh}', result.baselineBill.kwh.toString())}</span>
               </div>
-              <span className="font-semibold text-ink">{formatRm(result.baselineBill.totalAmount)}</span>
+              <span className="font-semibold text-ink whitespace-nowrap">{formatRm(result.baselineBill.totalAmount)}</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 font-sans text-muted">
                 <Fuel size={14} strokeWidth={2} className="text-oil" />
-                <span>{t.verdict.petrolLabel}</span>
+                <span className="whitespace-nowrap">{t.verdict.petrolLabel}</span>
               </div>
-              <span className="font-semibold text-oil">{formatRm(inputs.fatherPetrolCostRm)}</span>
+              <span className="font-semibold text-oil whitespace-nowrap">{formatRm(inputs.fatherPetrolCostRm)}</span>
             </div>
           </div>
         </div>
@@ -142,10 +142,10 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
         {/* Right: EV State */}
         <div className="rounded-2xl border border-brand/35 bg-surface p-4 space-y-3 shadow-sm">
           <div className="flex items-center justify-between border-b border-line pb-2.5">
-            <span className="text-xs font-bold text-brand uppercase tracking-wider">
+            <span className="text-xs font-bold text-brand uppercase tracking-wider whitespace-nowrap">
               {t.verdict.evMonthlyTitle}
             </span>
-            <span className="font-mono text-base font-bold text-brand">
+            <span className="font-mono text-base font-bold text-brand whitespace-nowrap">
               {formatRm(result.newTotalMonthlyEnergyExpense)}
             </span>
           </div>
@@ -154,16 +154,16 @@ export const SavingsHeroCard: React.FC<SavingsHeroCardProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 font-sans text-muted">
                 <Zap size={14} strokeWidth={2} className="text-brand" />
-                <span>{t.verdict.newHomeBillLabel.replace('{kwh}', result.newCombinedBill.kwh.toString())}</span>
+                <span className="whitespace-nowrap">{t.verdict.newHomeBillLabel.replace('{kwh}', result.newCombinedBill.kwh.toString())}</span>
               </div>
-              <span className="font-semibold text-brand">{formatRm(result.newCombinedBill.totalAmount)}</span>
+              <span className="font-semibold text-brand whitespace-nowrap">{formatRm(result.newCombinedBill.totalAmount)}</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 font-sans text-faint">
-                <span>{inputs.chargingMode === 'home_only' ? t.verdict.publicDcZeroLabel : t.verdict.publicDcLabel}</span>
+                <span className="whitespace-nowrap">{inputs.chargingMode === 'home_only' ? t.verdict.publicDcZeroLabel : t.verdict.publicDcLabel}</span>
               </div>
-              <span className="text-muted">{formatRm(result.publicChargingCost)}</span>
+              <span className="text-muted whitespace-nowrap">{formatRm(result.publicChargingCost)}</span>
             </div>
           </div>
         </div>

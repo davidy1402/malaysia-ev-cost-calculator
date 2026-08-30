@@ -38,7 +38,7 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-1 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-muted btn-spring hover:border-line-strong hover:text-ink shadow-sm"
+            className="flex items-center gap-1 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-muted btn-spring hover:border-line-strong hover:text-ink shadow-sm whitespace-nowrap"
           >
             <span>{isExpanded ? t.tnb.hideDetails : t.tnb.viewDetails}</span>
             {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -48,10 +48,10 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
         {/* Usage Summary Box */}
         <div className="space-y-3 rounded-2xl border border-line bg-surface p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="text-ink font-bold">
+            <span className="text-ink font-bold whitespace-nowrap">
               {t.tnb.totalUsageTitle}<strong className="font-mono text-base font-extrabold text-brand ml-1">{totalKwh}</strong> kWh
             </span>
-            <span className="text-xs text-muted font-mono">
+            <span className="text-xs text-muted font-mono whitespace-nowrap">
               {t.tnb.totalUsageSub
                 .replace('{home}', result.baselineBill.kwh.toString())
                 .replace('{ev}', result.evHomeChargingKwh.toString())}
@@ -76,12 +76,12 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
               />
             </div>
 
-            <div className="flex justify-between text-[11px] text-muted">
-              <div className="flex items-center gap-1.5">
+            <div className="flex justify-between text-[11px] text-muted flex-wrap gap-1">
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
                 <span className="h-2 w-2 rounded-full bg-grid inline-block" />
                 <span>{t.tnb.homeUsageLegend.replace('{kwh}', result.baselineBill.kwh.toString())}</span>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
                 <span className="h-2 w-2 rounded-full bg-brand inline-block" />
                 <span>{t.tnb.evUsageLegend.replace('{kwh}', result.evHomeChargingKwh.toString())}</span>
               </div>
@@ -90,7 +90,7 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
 
           {/* Summary Note */}
           <div className="rounded-xl bg-paper/80 p-3 text-xs text-ink leading-relaxed border border-line">
-            <span className="font-bold">账单变化一览：</span>
+            <span className="font-bold">账单变化简析：</span>
             {t.tnb.billChangeSummary
               .replace('{old}', formatRm(result.baselineBill.totalAmount))
               .replace('{oldKwh}', result.baselineBill.kwh.toString())
@@ -102,9 +102,9 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
         {/* Expanded Itemized Table */}
         {isExpanded && (
           <div className="overflow-hidden rounded-2xl border border-line bg-surface text-xs shadow-sm">
-            <div className="p-3 bg-paper/80 border-b border-line text-ink font-bold flex items-center justify-between">
-              <span>{t.tnb.itemizedHeader}</span>
-              <span className="font-mono text-brand font-bold">
+            <div className="p-3 bg-paper/80 border-b border-line text-ink font-bold flex items-center justify-between flex-wrap gap-1">
+              <span className="whitespace-nowrap">{t.tnb.itemizedHeader}</span>
+              <span className="font-mono text-brand font-bold whitespace-nowrap">
                 {t.tnb.newTotalHeader.replace('{amount}', formatRm(result.newCombinedBill.totalAmount))}
               </span>
             </div>
@@ -112,37 +112,37 @@ export const TnbBreakdownCard: React.FC<TnbBreakdownCardProps> = ({
             <div className="divide-y divide-line/60 font-mono text-ink">
               <div className="flex items-center justify-between px-3.5 py-2.5">
                 <span className="font-sans text-muted">{t.tnb.item1}</span>
-                <span className="font-semibold text-ink">{formatRm(result.newCombinedBill.baseEnergySubtotal)}</span>
+                <span className="font-semibold text-ink whitespace-nowrap">{formatRm(result.newCombinedBill.baseEnergySubtotal)}</span>
               </div>
 
               <div className="flex items-center justify-between px-3.5 py-2.5 text-brand">
                 <span className="font-sans text-muted">{t.tnb.item2.replace('{sen}', result.newCombinedBill.eeiRebateSen.toString())}</span>
-                <span>−{formatRm(result.newCombinedBill.eeiRebateAmount)}</span>
+                <span className="whitespace-nowrap">−{formatRm(result.newCombinedBill.eeiRebateAmount)}</span>
               </div>
 
               <div className="flex items-center justify-between px-3.5 py-2.5">
                 <span className="font-sans text-muted">{t.tnb.item3}</span>
-                <span className="text-ink">{result.newCombinedBill.retailCharge > 0 ? formatRm(result.newCombinedBill.retailCharge) : t.tnb.waivedText}</span>
+                <span className="text-ink whitespace-nowrap">{result.newCombinedBill.retailCharge > 0 ? formatRm(result.newCombinedBill.retailCharge) : t.tnb.waivedText}</span>
               </div>
 
               <div className="flex items-center justify-between px-3.5 py-2.5">
                 <span className="font-sans text-muted">{t.tnb.item4}</span>
-                <span className="text-ink">{result.newCombinedBill.afaSurcharge > 0 ? formatRm(result.newCombinedBill.afaSurcharge) : t.tnb.waivedText}</span>
+                <span className="text-ink whitespace-nowrap">{result.newCombinedBill.afaSurcharge > 0 ? formatRm(result.newCombinedBill.afaSurcharge) : t.tnb.waivedText}</span>
               </div>
 
               <div className="flex items-center justify-between px-3.5 py-2.5">
                 <span className="font-sans text-muted">{t.tnb.item5}</span>
-                <span className="text-ink">{formatRm(result.newCombinedBill.kwtbbFund)}</span>
+                <span className="text-ink whitespace-nowrap">{formatRm(result.newCombinedBill.kwtbbFund)}</span>
               </div>
 
               <div className="flex items-center justify-between px-3.5 py-2.5">
                 <span className="font-sans text-muted">{t.tnb.item6}</span>
-                <span className="text-ink">{formatRm(result.newCombinedBill.sstTax)}</span>
+                <span className="text-ink whitespace-nowrap">{formatRm(result.newCombinedBill.sstTax)}</span>
               </div>
 
               <div className="flex items-center justify-between px-3.5 py-3 bg-brand-soft text-brand font-bold">
                 <span className="font-sans">{t.tnb.finalTotal}</span>
-                <span className="text-base">{formatRm(result.newCombinedBill.totalAmount)}</span>
+                <span className="text-base whitespace-nowrap">{formatRm(result.newCombinedBill.totalAmount)}</span>
               </div>
             </div>
           </div>

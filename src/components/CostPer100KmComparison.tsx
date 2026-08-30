@@ -65,9 +65,9 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-bold text-ink">
                 <Fuel size={15} strokeWidth={2} className="text-oil" />
-                <span>{t.cost100km.petrolLabel}</span>
+                <span className="whitespace-nowrap">{t.cost100km.petrolLabel}</span>
               </div>
-              <span className="font-mono text-lg font-bold text-oil">
+              <span className="font-mono text-lg font-bold text-oil whitespace-nowrap">
                 {formatRm(result.petrolCostPer100Km)}
               </span>
             </div>
@@ -77,8 +77,8 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-[11px] text-muted font-medium">
-              <span>{t.cost100km.petrolLiters.replace('{liters}', (100 / inputs.petrolFuelEfficiencyKmPerL).toFixed(1))}</span>
-              <span>{t.cost100km.atPrice.replace('{price}', inputs.petrolPricePerLiter.toFixed(2))}</span>
+              <span className="whitespace-nowrap">{t.cost100km.petrolLiters.replace('{liters}', (100 / inputs.petrolFuelEfficiencyKmPerL).toFixed(1))}</span>
+              <span className="whitespace-nowrap">{t.cost100km.atPrice.replace('{price}', inputs.petrolPricePerLiter.toFixed(2))}</span>
             </div>
           </div>
 
@@ -87,9 +87,9 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs font-bold text-ink">
                 <Zap size={15} strokeWidth={2} className="text-brand" />
-                <span>{t.cost100km.evLabel.replace('{model}', inputs.modelName.trim() || 'EV')}</span>
+                <span className="whitespace-nowrap">{t.cost100km.evLabel.replace('{model}', inputs.modelName.trim() || 'EV')}</span>
               </div>
-              <span className="font-mono text-lg font-bold text-brand">
+              <span className="font-mono text-lg font-bold text-brand whitespace-nowrap">
                 {formatRm(result.evCostPer100Km)}
               </span>
             </div>
@@ -104,12 +104,12 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
             </div>
 
             <div className="flex items-center justify-between text-[11px] text-muted font-medium">
-              <span>
+              <span className="whitespace-nowrap">
                 {t.cost100km.evGrid
                   .replace('{net}', inputs.consumptionKwhPer100Km.toString())
                   .replace('{gross}', (inputs.consumptionKwhPer100Km * 1.10).toFixed(1))}
               </span>
-              <span className="font-bold text-brand">
+              <span className="font-bold text-brand whitespace-nowrap">
                 {t.cost100km.cheaperBy.replace('{ratio}', result.savingsRatioPerKm.toString())}
               </span>
             </div>
@@ -119,11 +119,11 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
         {/* Battery & Real Trip Scenario Table */}
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
-            <span className="flex items-center gap-1.5 font-bold text-ink">
+            <span className="flex items-center gap-1.5 font-bold text-ink whitespace-nowrap">
               <MapPin size={14} strokeWidth={2} className="text-brand" />
               <span>{t.cost100km.tripTitle}</span>
             </span>
-            <span className="flex items-center gap-1.5 text-[11px] text-muted font-mono">
+            <span className="flex items-center gap-1.5 text-[11px] text-muted font-mono whitespace-nowrap">
               <BatteryCharging size={14} strokeWidth={2} className="text-brand" />
               <span>
                 {t.cost100km.fullChargeTag
@@ -134,14 +134,14 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
             </span>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto no-scrollbar rounded-2xl border border-line bg-surface shadow-sm">
+            <table className="w-full text-left text-xs min-w-[340px]">
               <thead className="bg-paper/80 text-[11px] text-muted font-bold border-b border-line">
                 <tr>
-                  <th className="px-4 py-2.5">{t.cost100km.colTrip}</th>
-                  <th className="px-3 py-2.5 text-right">{t.cost100km.colPetrol}</th>
-                  <th className="px-3 py-2.5 text-right">{t.cost100km.colEv}</th>
-                  <th className="px-4 py-2.5 text-right text-brand">{t.cost100km.colSave}</th>
+                  <th className="px-4 py-2.5 whitespace-nowrap">{t.cost100km.colTrip}</th>
+                  <th className="px-3 py-2.5 text-right whitespace-nowrap">{t.cost100km.colPetrol}</th>
+                  <th className="px-3 py-2.5 text-right whitespace-nowrap">{t.cost100km.colEv}</th>
+                  <th className="px-4 py-2.5 text-right text-brand whitespace-nowrap">{t.cost100km.colSave}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line/60 font-mono">
@@ -149,10 +149,10 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
                   const tripSavings = Math.round((trip.petrolCost - trip.evCost) * 100) / 100;
                   return (
                     <tr key={trip.name} className="transition-colors hover:bg-paper/40">
-                      <td className="px-4 py-2.5 font-sans font-medium text-ink">{trip.name}</td>
-                      <td className="px-3 py-2.5 text-right text-muted">{formatRm(trip.petrolCost)}</td>
-                      <td className="px-3 py-2.5 text-right font-semibold text-ink">{formatRm(trip.evCost)}</td>
-                      <td className="px-4 py-2.5 text-right font-bold text-brand">
+                      <td className="px-4 py-2.5 font-sans font-medium text-ink whitespace-nowrap">{trip.name}</td>
+                      <td className="px-3 py-2.5 text-right text-muted whitespace-nowrap">{formatRm(trip.petrolCost)}</td>
+                      <td className="px-3 py-2.5 text-right font-semibold text-ink whitespace-nowrap">{formatRm(trip.evCost)}</td>
+                      <td className="px-4 py-2.5 text-right font-bold text-brand whitespace-nowrap">
                         +{formatRm(tripSavings)}
                       </td>
                     </tr>
@@ -162,7 +162,7 @@ export const CostPer100KmComparison: React.FC<CostPer100KmComparisonProps> = ({
             </table>
           </div>
 
-          <p className="flex justify-between text-[11px] text-faint">
+          <p className="flex justify-between text-[11px] text-faint flex-wrap gap-1">
             <span>{t.cost100km.marginalFootnote}</span>
             <span className="font-mono">{t.cost100km.perKmFootnote.replace('{cost}', formatRm(result.evCostPer100Km / 100, { decimals: 3 }))}</span>
           </p>

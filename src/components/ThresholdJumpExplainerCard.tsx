@@ -40,7 +40,7 @@ export const ThresholdJumpExplainerCard: React.FC<ThresholdJumpExplainerCardProp
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-muted btn-spring hover:border-line-strong hover:text-ink shadow-sm"
+            className="flex items-center gap-1 rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-muted btn-spring hover:border-line-strong hover:text-ink shadow-sm whitespace-nowrap"
           >
             <span>{isOpen ? t.threshold.collapseBtn : t.threshold.expandBtn}</span>
             {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -49,12 +49,12 @@ export const ThresholdJumpExplainerCard: React.FC<ThresholdJumpExplainerCardProp
 
         {/* Your Household Specific Risk Status */}
         <div className="rounded-2xl border border-oil/30 bg-oil-soft/40 p-4 space-y-2.5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-oil flex items-center gap-1.5">
+          <div className="flex items-center justify-between flex-wrap gap-1">
+            <span className="text-xs font-bold text-oil flex items-center gap-1.5 whitespace-nowrap">
               <Flame size={15} strokeWidth={2} />
               <span>{t.threshold.riskTitle}</span>
             </span>
-            <span className="font-mono text-xs font-semibold text-ink">
+            <span className="font-mono text-xs font-semibold text-ink whitespace-nowrap">
               {baselineKwh} kWh ➔ <strong className="text-oil font-bold">{newKwh} kWh</strong>
             </span>
           </div>
@@ -106,7 +106,7 @@ export const ThresholdJumpExplainerCard: React.FC<ThresholdJumpExplainerCardProp
 
             {/* Solution: ToU */}
             <div className="mt-4 rounded-xl bg-grid-soft border border-grid/30 p-3 space-y-1.5">
-              <div className="flex items-center gap-1.5 font-bold text-grid">
+              <div className="flex items-center gap-1.5 font-bold text-grid whitespace-nowrap">
                 <Clock size={15} strokeWidth={2} />
                 <span>{t.threshold.touTitle}</span>
               </div>
