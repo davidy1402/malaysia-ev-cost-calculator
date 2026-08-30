@@ -10,10 +10,10 @@ interface AdvancedSettingsDrawerProps {
   onChange: (patch: Partial<UserInputs>) => void;
 }
 
-const fieldLabel = 'mb-1 block text-[11px] font-medium text-zinc-400';
+const fieldLabel = 'mb-1 block text-[11px] font-semibold text-muted';
 const fieldInput =
-  'w-full rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs font-semibold text-zinc-100 ' +
-  'transition-colors focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/15';
+  'w-full rounded-xl border border-line bg-paper px-3 py-2 text-xs font-semibold font-mono text-ink ' +
+  'transition-all focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20';
 
 function SettingsSection({
   icon,
@@ -27,10 +27,10 @@ function SettingsSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-3.5">
+    <div className="space-y-3 rounded-2xl border border-line bg-surface p-4 shadow-sm">
       <div className="flex items-center gap-2">
-        <span className={`flex h-6 w-6 items-center justify-center rounded-md ${chipClass}`}>{icon}</span>
-        <span className="text-xs font-semibold text-zinc-200">{title}</span>
+        <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${chipClass}`}>{icon}</span>
+        <span className="text-xs font-bold text-ink">{title}</span>
       </div>
       {children}
     </div>
@@ -47,35 +47,35 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center sm:p-4">
-      <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl sm:rounded-3xl sm:p-6">
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-md sm:items-center sm:p-4">
+      <div className="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-line bg-surface p-5 shadow-2xl sm:rounded-3xl sm:p-6">
+        <div className="flex items-center justify-between border-b border-line pb-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-              <SlidersHorizontal size={16} strokeWidth={1.75} />
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-soft text-brand shadow-sm">
+              <SlidersHorizontal size={16} strokeWidth={2} />
             </span>
             <div>
-              <h3 className="text-sm font-semibold tracking-tight text-zinc-100">{t.settingsDrawer.title}</h3>
-              <p className="text-[11px] text-zinc-400">{t.settingsDrawer.sub}</p>
+              <h3 className="text-sm font-bold tracking-tight text-ink">{t.settingsDrawer.title}</h3>
+              <p className="text-[11px] text-muted">{t.settingsDrawer.sub}</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-line text-muted hover:text-ink btn-spring"
             aria-label="Close"
           >
-            <X size={15} strokeWidth={1.75} />
+            <X size={15} strokeWidth={2} />
           </button>
         </div>
 
         <div className="mt-4 space-y-3.5">
           {/* 1. Petrol Settings */}
           <SettingsSection
-            icon={<Fuel size={13} strokeWidth={1.75} />}
+            icon={<Fuel size={14} strokeWidth={2} />}
             title={t.settingsDrawer.petrolSection}
-            chipClass="bg-amber-500/10 text-amber-400"
+            chipClass="bg-oil-soft text-oil"
           >
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -88,7 +88,7 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
                   onChange={(e) => onChange({ petrolPricePerLiter: parseFloat(e.target.value) || 1.99 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-zinc-500">基准 RM 1.99 (RON95 RM 2.05)</span>
+                <span className="mt-1 block text-[10px] text-faint font-mono">基准 RM 1.99</span>
               </div>
 
               <div>
@@ -101,16 +101,16 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
                   onChange={(e) => onChange({ petrolFuelEfficiencyKmPerL: parseFloat(e.target.value) || 14.0 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-zinc-500">≈ 7.14 L / 100km</span>
+                <span className="mt-1 block text-[10px] text-faint font-mono">≈ 7.14 L / 100km</span>
               </div>
             </div>
           </SettingsSection>
 
           {/* 2. Charging Efficiency & Public Ratio */}
           <SettingsSection
-            icon={<BatteryCharging size={13} strokeWidth={1.75} />}
+            icon={<BatteryCharging size={14} strokeWidth={2} />}
             title={t.settingsDrawer.evSection}
-            chipClass="bg-emerald-500/10 text-emerald-400"
+            chipClass="bg-brand-soft text-brand"
           >
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -128,7 +128,7 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
                   }}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-zinc-500">标准 AC 损耗 10%</span>
+                <span className="mt-1 block text-[10px] text-faint font-mono">标准 AC 损耗 10%</span>
               </div>
 
               <div>
@@ -141,16 +141,16 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
                   onChange={(e) => onChange({ publicDcPricePerKwh: parseFloat(e.target.value) || 1.40 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-zinc-500">大马快充均价 RM 1.40</span>
+                <span className="mt-1 block text-[10px] text-faint font-mono">快充均价 RM 1.40</span>
               </div>
             </div>
           </SettingsSection>
 
           {/* 3. TNB & ToU Settings */}
           <SettingsSection
-            icon={<Zap size={13} strokeWidth={1.75} />}
+            icon={<Zap size={14} strokeWidth={2} />}
             title={t.settingsDrawer.tnbSection}
-            chipClass="bg-blue-500/10 text-blue-400"
+            chipClass="bg-grid-soft text-grid"
           >
             <div className="space-y-3">
               <div>
@@ -163,23 +163,23 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
                   onChange={(e) => onChange({ afaRateSen: parseFloat(e.target.value) || 3.80 })}
                   className={fieldInput}
                 />
-                <span className="mt-1 block text-[10px] text-zinc-500">2026年8月最新：+3.80 sen/kWh</span>
+                <span className="mt-1 block text-[10px] text-faint font-mono">最新 AFA: +3.80 sen/kWh</span>
               </div>
 
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-3">
+              <div className="rounded-xl border border-line bg-paper p-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-zinc-200">
+                  <label className="text-xs font-bold text-ink">
                     {t.settingsDrawer.touToggle}
                   </label>
                   <input
                     type="checkbox"
                     checked={inputs.isTouEnabled}
                     onChange={(e) => onChange({ isTouEnabled: e.target.checked })}
-                    className="h-4 w-4 rounded border-zinc-700 bg-zinc-900 text-emerald-500 focus:ring-emerald-500/20"
+                    className="h-4 w-4 rounded border-line text-brand focus:ring-brand/20"
                   />
                 </div>
                 {inputs.isTouEnabled && (
-                  <div className="mt-2.5 pt-2 border-t border-zinc-800">
+                  <div className="mt-2.5 pt-2 border-t border-line">
                     <label className={fieldLabel}>{t.settingsDrawer.touRate}</label>
                     <input
                       type="number"
@@ -196,11 +196,11 @@ export const AdvancedSettingsDrawer: React.FC<AdvancedSettingsDrawerProps> = ({
           </SettingsSection>
         </div>
 
-        <div className="mt-5 border-t border-zinc-800 pt-3">
+        <div className="mt-5 border-t border-line pt-3">
           <button
             type="button"
             onClick={onClose}
-            className="w-full rounded-2xl bg-emerald-500 py-3 text-xs font-bold text-zinc-950 transition-all hover:bg-emerald-400 active:scale-98"
+            className="w-full rounded-2xl bg-brand py-3 text-xs font-bold text-onbrand btn-spring shadow-md"
           >
             {t.settingsDrawer.closeBtn}
           </button>

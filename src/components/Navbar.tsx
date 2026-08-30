@@ -11,8 +11,8 @@ interface NavbarProps {
 }
 
 const iconBtn =
-  'flex h-9 w-9 items-center justify-center rounded-full border border-line bg-surface text-muted ' +
-  'transition-all hover:border-line-strong hover:text-ink active:scale-95';
+  'flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-line bg-surface/60 text-muted ' +
+  'btn-spring hover:border-line-strong hover:text-ink hover:bg-surface active:scale-95';
 
 export const Navbar: React.FC<NavbarProps> = ({
   onReset,
@@ -24,30 +24,35 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { language, toggleLanguage, t } = useLanguage();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-paper/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6 sm:pt-4">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 rounded-2xl glass-island px-3.5 py-2.5 sm:px-5 sm:py-3 shadow-lg">
+        {/* Brand Crest */}
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand text-onbrand shadow-card">
-            <Zap size={18} strokeWidth={1.75} />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand text-onbrand shadow-sm">
+            <Zap size={16} strokeWidth={2.25} />
           </div>
           <div>
-            <h1 className="text-xs sm:text-sm font-bold text-ink tracking-tight leading-tight">
+            <span className="text-xs sm:text-sm font-bold tracking-tight text-ink block leading-none">
               {t.navbar.title}
-            </h1>
+            </span>
+            <span className="text-[10px] text-muted font-medium hidden sm:inline-block mt-0.5">
+              TNB 2025/2026 Restructured Domestic Tariff Model
+            </span>
           </div>
         </div>
 
+        {/* Action Controls */}
         <div className="flex shrink-0 items-center gap-1.5">
-          {/* Language Switcher */}
+          {/* Language Switcher Pill */}
           <button
             type="button"
             onClick={toggleLanguage}
-            className="flex h-9 items-center gap-1 px-2.5 rounded-full border border-line bg-surface text-ink text-xs font-semibold shadow-card transition-all hover:border-brand/40 active:scale-95"
+            className="flex h-8 sm:h-9 items-center gap-1.5 px-3 rounded-xl border border-line bg-surface/80 text-ink text-xs font-semibold btn-spring hover:border-brand/40 shadow-sm"
             title="Switch Language / 切换语言"
             aria-label="Switch Language"
           >
-            <Languages size={14} className="text-brand" />
-            <span>{language === 'zh' ? 'EN' : '中文'}</span>
+            <Languages size={14} strokeWidth={2} className="text-brand" />
+            <span className="font-mono tracking-wider text-[11px]">{language === 'zh' ? 'EN' : '中文'}</span>
           </button>
 
           {/* Theme Toggle */}
@@ -59,9 +64,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="Toggle theme"
           >
             {theme === 'dark' ? (
-              <Sun size={16} strokeWidth={1.75} />
+              <Sun size={15} strokeWidth={2} />
             ) : (
-              <Moon size={16} strokeWidth={1.75} />
+              <Moon size={15} strokeWidth={2} />
             )}
           </button>
 
@@ -73,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title={t.navbar.settings}
             aria-label="Settings"
           >
-            <SlidersHorizontal size={16} strokeWidth={1.75} />
+            <SlidersHorizontal size={15} strokeWidth={2} />
           </button>
 
           {/* Reset */}
@@ -84,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title={t.navbar.reset}
             aria-label="Reset"
           >
-            <RotateCcw size={16} strokeWidth={1.75} />
+            <RotateCcw size={15} strokeWidth={2} />
           </button>
 
           {/* Share */}
@@ -95,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title={t.navbar.share}
             aria-label="Share"
           >
-            <Share2 size={16} strokeWidth={1.75} />
+            <Share2 size={15} strokeWidth={2} />
           </button>
         </div>
       </div>
