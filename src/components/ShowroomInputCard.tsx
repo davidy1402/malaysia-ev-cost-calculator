@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Fuel, Home, Gauge, Check, BookmarkPlus, X, BatteryCharging, Car } from 'lucide-react';
 import { UserInputs, EvCalculationResult } from '../types/calculator';
 import { POPULAR_EV_PRESETS } from '../constants/presets';
-import { formatRm } from '../utils/formatter';
+import { estimateKwhFromTnbBill } from '../utils/tnbTariff';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface SavedVehicle {
@@ -56,6 +56,8 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
   const { t } = useLanguage();
   const [savedVehicles, setSavedVehicles] = useState<SavedVehicle[]>(loadSavedVehicles);
   const [justSaved, setJustSaved] = useState(false);
+  const [homeInputMode, setHomeInputMode] = useState<'kwh' | 'rm'>('kwh');
+  const [tempBillRm, setTempBillRm] = useState<string>('');
 
   useEffect(() => {
     try {
@@ -203,10 +205,10 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
           <div className="mt-3 pt-2.5 border-t border-brand/15">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
-                车型快速配置 (Quick Presets)
+                热门车型一键填入 (Quick Presets)
               </span>
               <span className="text-[10px] text-faint hidden sm:inline">
-                左右滑动查看更多
+                左右滑动选择更多
               </span>
             </div>
             <div className="flex overflow-x-auto no-scrollbar gap-1.5 py-0.5 -mx-1 px-1">
@@ -386,7 +388,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             </div>
           </div>
 
-          {/* Column 2: Household TNB Baseline */}
+          {/* Column 2: Household TNB Baseline with Bidirectional kWh / RM Switch */}
           <div className="space-y-2 rounded-2xl border border-line bg-surface/70 p-3.5">
             <div className="flex items-center justify-between">
               <label className={tileLabel}>
@@ -395,34 +397,89 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 </span>
                 <span className="whitespace-nowrap">{t.showroom.homeElectricityLabel}</span>
               </label>
-              <span className="font-mono text-xs font-bold text-grid whitespace-nowrap">
-                {formatRm(result.baselineBill.totalAmount === 172.71 ? 172.70 : result.baselineBill.totalAmount)}
-              </span>
+
+              {/* Mode Toggle between kWh and RM */}
+              <div className="flex items-center rounded-md border border-line bg-paper p-0.5 text-[9px] font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setHomeInputMode('kwh')}
+                  className={`rounded px-1.5 py-0.5 transition-colors ${
+                    homeInputMode === 'kwh'
+                      ? 'bg-grid-soft text-grid font-bold'
+                      : 'text-muted hover:text-ink'
+                  }`}
+                >
+                  kWh
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHomeInputMode('rm');
+                    setTempBillRm(result.baselineBill.totalAmount.toFixed(2));
+                  }}
+                  className={`rounded px-1.5 py-0.5 transition-colors ${
+                    homeInputMode === 'rm'
+                      ? 'bg-grid-soft text-grid font-bold'
+                      : 'text-muted hover:text-ink'
+                  }`}
+                >
+                  RM
+                </button>
+              </div>
             </div>
 
-            <div className="relative">
-              <input
-                type="number"
-                step="10"
-                min="0"
-                max="3000"
-                inputMode="numeric"
-                value={inputs.baselineHomeKwh || ''}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  const kwh = isNaN(val) ? 0 : val;
-                  onChange({
-                    baselineHomeKwh: kwh,
-                    baselineHomeBillRm: result.baselineBill.totalAmount
-                  });
-                }}
-                placeholder="501"
-                className={numInput}
-              />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-faint">
-                kWh
-              </span>
-            </div>
+            {homeInputMode === 'kwh' ? (
+              <div className="relative">
+                <input
+                  type="number"
+                  step="10"
+                  min="0"
+                  max="3000"
+                  inputMode="numeric"
+                  value={inputs.baselineHomeKwh || ''}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value);
+                    const kwh = isNaN(val) ? 0 : val;
+                    onChange({
+                      baselineHomeKwh: kwh,
+                      baselineHomeBillRm: result.baselineBill.totalAmount
+                    });
+                  }}
+                  placeholder="501"
+                  className={numInput}
+                />
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-faint">
+                  kWh
+                </span>
+              </div>
+            ) : (
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-faint">
+                  RM
+                </span>
+                <input
+                  type="number"
+                  step="10"
+                  min="0"
+                  max="3000"
+                  inputMode="decimal"
+                  value={tempBillRm}
+                  onChange={(e) => {
+                    setTempBillRm(e.target.value);
+                    const val = parseFloat(e.target.value);
+                    if (!isNaN(val) && val > 0) {
+                      const estimatedKwh = estimateKwhFromTnbBill(val, { afaRateSen: inputs.afaRateSen });
+                      onChange({
+                        baselineHomeKwh: estimatedKwh,
+                        baselineHomeBillRm: val
+                      });
+                    }
+                  }}
+                  placeholder="172.70"
+                  className={`${numInput} pl-9`}
+                />
+              </div>
+            )}
 
             {/* Quick Bill Presets */}
             <div className="flex flex-wrap gap-1 pt-0.5">
@@ -434,7 +491,10 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
                 <button
                   key={b.kwh}
                   type="button"
-                  onClick={() => onChange({ baselineHomeKwh: b.kwh })}
+                  onClick={() => {
+                    onChange({ baselineHomeKwh: b.kwh });
+                    setTempBillRm('');
+                  }}
                   className={`rounded-lg px-1.5 py-0.5 text-[10px] font-medium btn-spring whitespace-nowrap ${
                     inputs.baselineHomeKwh === b.kwh
                       ? 'bg-grid-soft text-grid border border-grid/30 font-semibold'
@@ -447,7 +507,7 @@ export const ShowroomInputCard: React.FC<ShowroomInputCardProps> = ({
             </div>
           </div>
 
-          {/* Column 3: Father's Monthly Petrol */}
+          {/* Column 3: Current Monthly Petrol Spend */}
           <div className="space-y-2 rounded-2xl border border-line bg-surface/70 p-3.5">
             <div className="flex items-center justify-between">
               <label className={tileLabel}>

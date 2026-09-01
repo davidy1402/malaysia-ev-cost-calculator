@@ -23,6 +23,29 @@ export function getEeiRateSen(kwh: number): number {
 }
 
 /**
+ * Reverse-calculates estimated monthly kWh from a target TNB Bill amount in RM.
+ * Allows users to input their monthly electricity bill directly (e.g. RM 200) without knowing exact kWh.
+ */
+export function estimateKwhFromTnbBill(
+  targetBillRm: number,
+  options?: { afaRateSen?: number }
+): number {
+  if (targetBillRm <= 0) return 0;
+  let low = 0;
+  let high = 5000;
+  for (let i = 0; i < 25; i++) {
+    const mid = (low + high) / 2;
+    const bill = calculateTnbBill(mid, options);
+    if (bill.totalAmount < targetBillRm) {
+      low = mid;
+    } else {
+      high = mid;
+    }
+  }
+  return Math.round(((low + high) / 2) * 10) / 10;
+}
+
+/**
  * Simulates a full, itemized monthly TNB Residential Electricity Bill.
  * Validated 1:1 against real TNB household bills (e.g. 501 kWh = RM 172.70 payable / RM 172.71 raw).
  */
