@@ -1,35 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ————————————————————————————————————————————————
-   New Automotive Dark Tech Design Tokens
-   High-density, precision-engineered UI
-———————————————————————————————————————————————— */
 :root {
-  --background-default: hsl(210 20% 98%);
-  --surface-base: hsl(0 0% 100%);
-  --surface-raised: hsl(210 20% 95%);
-  --surface-overlay: hsl(210 16% 90%);
-  --brand-primary: hsl(37 93% 45%);
-  --brand-accent: hsl(212 72% 50%);
-  --text-primary: hsl(220 20% 10%);
-  --text-secondary: hsl(220 10% 45%);
-  --text-disabled: hsl(220 5% 65%);
-  --text-inverse: hsl(0 0% 98%);
-  --border-subtle: hsl(220 15% 88%);
-  --border-strong: hsl(220 12% 75%);
-  --status-positive: hsl(150 84% 35%);
-  --status-warning: hsl(15 85% 50%);
-  --status-error: hsl(0 80% 55%);
-  --status-info: hsl(212 72% 50%);
-  --focus-ring: hsl(37 93% 45%);
-
-  --font-display: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-body: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
-}
-
-.dark {
   --background-default: hsl(220 6% 8%);
   --surface-base: hsl(220 5% 11%);
   --surface-raised: hsl(220 6% 14%);
@@ -46,7 +20,31 @@
   --status-warning: hsl(15 85% 55%);
   --status-error: hsl(0 80% 60%);
   --status-info: hsl(212 72% 59%);
-  --focus-ring: hsl(37 93% 55%);
+  --focus-ring-default: hsl(37 93% 55%);
+
+  --font-display: "JetBrains Mono", ui-monospace, monospace;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-bottom: 0px;
+}
+
+.light {
+  --background-default: hsl(210 20% 98%);
+  --surface-base: hsl(0 0% 100%);
+  --surface-raised: hsl(210 20% 95%);
+  --surface-overlay: hsl(210 16% 90%);
+  --brand-primary: hsl(37 93% 45%);
+  --brand-accent: hsl(212 72% 50%);
+  --text-primary: hsl(220 20% 10%);
+  --text-secondary: hsl(220 10% 45%);
+  --text-disabled: hsl(220 5% 65%);
+  --text-inverse: hsl(0 0% 98%);
+  --border-subtle: hsl(220 15% 88%);
+  --border-strong: hsl(220 12% 75%);
+  --status-positive: hsl(37 93% 45%);
+  --status-warning: hsl(15 85% 50%);
+  --status-error: hsl(0 80% 55%);
+  --status-info: hsl(212 72% 50%);
 }
 
 @theme inline {
@@ -69,48 +67,81 @@
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
-  --font-mono: var(--font-display);
-  --font-sans: var(--font-body);
+
+  --spacing-micro: 4px;
+  --spacing-tight: 8px;
+  --spacing-snug: 12px;
+  --spacing-base: 16px;
+  --spacing-comfortable: 24px;
+  --spacing-loose: 32px;
+  --spacing-section: 48px;
+  --spacing-section-y: 64px;
+  --spacing-macro: 96px;
+  --spacing-stack-sm: 16px;
+  --spacing-stack-md: 24px;
+  --spacing-stack-lg: 48px;
 }
 
-@layer base {
-  * {
-    font-feature-settings: "cv02" 1, "cv03" 1, "cv04" 1, "cv11" 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+/* Custom Typography & Utility Classes matching prototype */
+@layer utilities {
+  .text-caption {
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+  .text-body {
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+  .text-body-lg {
+    font-size: 19px;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+  .text-h3 {
+    font-size: 23px;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    font-weight: 600;
+  }
+  .text-h2 {
+    font-size: 29px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+  .text-h1 {
+    font-size: 37px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    font-weight: 700;
+  }
+  .text-display {
+    font-size: 57px;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    font-weight: 700;
   }
 
-  .font-display, .font-mono, [data-tabular] {
-    font-feature-settings: "tnum" 1, "zero" 1;
+  .shadow-floating {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    text-wrap: balance;
+  .hide-scrollbar::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-
-  p {
-    text-wrap: pretty;
-  }
-
-  html {
-    -webkit-tap-highlight-color: transparent;
-    scroll-behavior: smooth;
-  }
-
-  body {
-    background-color: var(--background-default);
-    color: var(--text-primary);
-    font-family: var(--font-body);
+  .hide-scrollbar,
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
-/* Hide scrollbar utility */
-.no-scrollbar::-webkit-scrollbar,
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar,
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+body {
+  background-color: var(--background-default);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }

@@ -1,78 +1,51 @@
-import { useState, useMemo, useEffect } from 'react';
-import { DEFAULT_USER_INPUTS } from './constants/presets';
-import { UserInputs } from './types/calculator';
-import { calculateAllEvMetrics } from './utils/tnbTariff';
-import { CockpitPage } from './components/CockpitPage';
-import { ResultsPage } from './components/ResultsPage';
-import { LanguageProvider } from './i18n/LanguageContext';
+import { useState, useEffect } from 'react';
+import CockpitPage from './pages/cockpit.page';
+import ResultsPage from './pages/results.page';
+import { useCalculatorStore } from './stores/calculator.store';
 
-type Theme = 'light' | 'dark';
-type ViewMode = 'cockpit' | 'results';
-
-function AppContent() {
-  const [view, setView] = useState<ViewMode>('cockpit');
-  const [inputs, setInputs] = useState<UserInputs>(DEFAULT_USER_INPUTS);
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof document !== 'undefined') {
-      const stored = localStorage.getItem('theme');
-      if (stored === 'light' || stored === 'dark') return stored;
-    }
-    return 'dark';
-  });
+export function App() {
+  const [currentPage, setCurrentPage] = useState<'cockpit' | 'results'>('cockpit');
+  const { theme } = useCalculatorStore();
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
-    try {
-      localStorage.setItem('theme', theme);
-    } catch {
-      /* ignore */
-    }
   }, [theme]);
 
-  // Instant reactive calculation
-  const result = useMemo(() => calculateAllEvMetrics(inputs), [inputs]);
+  // Setup window.App for prototype compatibility
+  useEffect(() => {
+    (window as unknown as { App: { transitionTo: (id: string) => void; goBack: () => void } }).App = {
+      transitionTo: (pageId: string) => {
+        if (pageId === 'results' || pageId === 'cockpit') {
+          setCurrentPage(pageId);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      },
+      goBack: () => {
+        setCurrentPage('cockpit');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+  }, []);
 
-  const handleUpdateInputs = (patch: Partial<UserInputs>) => {
-    setInputs((prev) => ({ ...prev, ...patch }));
-  };
-
-  const handleCalculate = () => {
-    setView('results');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleBackToCockpit = () => {
-    setView('cockpit');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (view === 'results') {
+  if (currentPage === 'results') {
     return (
       <ResultsPage
-        inputs={inputs}
-        result={result}
-        onBack={handleBackToCockpit}
-        onChange={handleUpdateInputs}
+        onBack={() => {
+          setCurrentPage('cockpit');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
     );
   }
 
   return (
     <CockpitPage
-      inputs={inputs}
-      result={result}
-      onChange={handleUpdateInputs}
-      onCalculate={handleCalculate}
-      theme={theme}
-      onToggleTheme={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+      onCalculate={() => {
+        setCurrentPage('results');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }}
     />
   );
 }
 
-export function App() {
-  return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
-  );
-}
+export default App;
