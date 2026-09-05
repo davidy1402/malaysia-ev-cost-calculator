@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { ChevronLeft, Info, Sun, Moon, Sparkles, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, Info, Sun, Moon, Sparkles, ShieldCheck, Share2, Copy, Check } from 'lucide-react';
 import { useCalculatorStore } from '../stores/calculator.store';
 import { useResultsStore } from '../stores/results.store';
 import { calculateAllEvMetrics } from '../utils/tnbTariff';
@@ -37,6 +37,7 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
   const store = useCalculatorStore();
   const { selectedComparatorId, setSelectedComparatorId } = useResultsStore();
   const txt = evCalcTranslations[store.language] || evCalcTranslations.en;
+  const [copied, setCopied] = useState(false);
 
   // Active Car A inputs
   const inputsA = useMemo<UserInputs>(() => ({
@@ -82,6 +83,30 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
   const isPositive = resultA.monthlyNetSavings >= 0;
   const fiveYearTcoDiff = Math.round((resultA.fiveYearTcoWithRoadTaxSavings - resultB.fiveYearTcoWithRoadTaxSavings) * 100) / 100;
 
+  const generateReportText = () => {
+    return txt.reportSummary
+      .replace('{model}', store.modelName)
+      .replace('{consumption}', store.consumption.toFixed(1))
+      .replace('{mileage}', store.mileage.toString())
+      .replace('{petrol}', store.petrolRm.toFixed(0))
+      .replace('{savings}', resultA.monthlyNetSavings.toFixed(2))
+      .replace('{evCost}', resultA.totalEvChargingCost.toFixed(2))
+      .replace('{tcoSavings}', resultA.fiveYearTcoWithRoadTaxSavings.toFixed(0));
+  };
+
+  const handleCopyReport = () => {
+    try {
+      navigator.clipboard.writeText(generateReportText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
+  const handleWhatsAppShare = () => {
+    const text = encodeURIComponent(generateReportText());
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
+
   return (
     <div className="relative min-h-screen bg-background-default antialiased pb-[calc(40px+env(safe-area-inset-bottom))]">
       
@@ -92,7 +117,7 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
             <ChevronLeft size={24} />
           </button>
           <img src="./logo.png" alt="EV Calc MY" className="w-6 h-6 rounded-md shadow-sm ml-1" />
-          <h1 className="text-body-lg font-semibold text-text-primary">{txt.verdictTitle}</h1>
+          <h1 className="text-body-lg font-semibold text-text-primary whitespace-nowrap">{txt.verdictTitle}</h1>
         </div>
         <button
           onClick={() => store.setTheme(store.theme === 'dark' ? 'light' : 'dark')}
@@ -105,30 +130,30 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
       <main className="px-base py-section space-y-section-y">
         
-        {/* Section 2: Verdict Hero */}
+        {/* Section 1: Verdict Hero */}
         <section id="verdict" className="space-y-stack-md">
            <div className="bg-surface-base border border-border-subtle rounded-xl p-comfortable flex flex-col items-center">
-             <div className="text-body text-text-secondary">{txt.monthlyNetSavings}</div>
-             <div className={`mt-2 text-[57px] font-display font-bold tracking-tight leading-none ${isPositive ? 'text-status-positive' : 'text-status-error'}`}>
+             <div className="text-body text-text-secondary whitespace-nowrap">{txt.monthlyNetSavings}</div>
+             <div className={`mt-2 text-[57px] font-display font-bold tracking-tight leading-none whitespace-nowrap ${isPositive ? 'text-status-positive' : 'text-status-error'}`}>
                {isPositive ? '+' : '-'}RM <CountUp to={Math.abs(resultA.monthlyNetSavings)} />
              </div>
              
-             <div className="grid grid-cols-3 w-full mt-stack-md pt-stack-md border-t border-border-subtle text-center gap-2">
+             <div className="grid grid-cols-3 w-full mt-stack-md pt-stack-md border-t border-border-subtle text-center gap-1 sm:gap-2">
                <div>
-                 <div className="text-caption text-text-secondary">{txt.oneYear}</div>
-                 <div className="text-body-lg font-display text-text-primary">RM {(resultA.monthlyNetSavings * 12).toFixed(0)}</div>
+                 <div className="text-caption text-text-secondary whitespace-nowrap">{txt.oneYear}</div>
+                 <div className="text-body-lg font-display text-text-primary whitespace-nowrap">RM {(resultA.monthlyNetSavings * 12).toFixed(0)}</div>
                </div>
                <div>
-                 <div className="text-caption text-text-secondary">{txt.fiveYear}</div>
-                 <div className="text-body-lg font-display text-text-primary">RM {resultA.fiveYearNetSavings.toFixed(0)}</div>
+                 <div className="text-caption text-text-secondary whitespace-nowrap">{txt.fiveYear}</div>
+                 <div className="text-body-lg font-display text-text-primary whitespace-nowrap">RM {resultA.fiveYearNetSavings.toFixed(0)}</div>
                </div>
                <div>
-                 <div className="text-caption text-text-secondary font-medium">{txt.tco}</div>
-                 <div className="text-body-lg font-display font-bold text-brand-accent">
+                 <div className="text-caption text-text-secondary font-medium whitespace-nowrap">{txt.tco}</div>
+                 <div className="text-body-lg font-display font-bold text-brand-accent whitespace-nowrap">
                    {resultA.fiveYearTcoWithRoadTaxSavings >= 0 ? '+' : ''}RM {resultA.fiveYearTcoWithRoadTaxSavings.toFixed(0)}
                  </div>
-                 <div className="text-[10px] text-text-secondary mt-0.5 whitespace-nowrap">
-                   {txt.inclRoadTax} ({resultA.annualRoadTaxDifferenceRm * 5 >= 0 ? '+' : ''}RM {(resultA.annualRoadTaxDifferenceRm * 5).toFixed(0)})
+                 <div className="text-[10px] text-text-secondary mt-0.5 whitespace-nowrap truncate">
+                   {txt.inclRoadTax}
                  </div>
                </div>
              </div>
@@ -137,42 +162,42 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
            {/* Waterfall Breakdown */}
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base">
              <div className="space-y-tight">
-               <div className="flex justify-between text-body">
-                 <span className="text-text-secondary">{txt.oldPetrolSpend}</span>
-                 <span className="font-display tabular-nums text-text-primary">RM {store.petrolRm.toFixed(2)}</span>
+               <div className="flex justify-between text-body items-center gap-2">
+                 <span className="text-text-secondary truncate">{txt.oldPetrolSpend}</span>
+                 <span className="font-display tabular-nums text-text-primary whitespace-nowrap shrink-0">RM {store.petrolRm.toFixed(2)}</span>
                </div>
-               <div className="flex justify-between text-body">
-                 <span className="text-text-secondary">{txt.marginalHomeElec}</span>
-                 <span className="font-display tabular-nums text-text-primary">RM {resultA.marginalHomeElectricityCost.toFixed(2)}</span>
+               <div className="flex justify-between text-body items-center gap-2">
+                 <span className="text-text-secondary truncate">{txt.marginalHomeElec}</span>
+                 <span className="font-display tabular-nums text-text-primary whitespace-nowrap shrink-0">RM {resultA.marginalHomeElectricityCost.toFixed(2)}</span>
                </div>
-               <div className="flex justify-between text-body pb-tight border-b border-border-subtle">
-                 <span className="text-text-secondary">{txt.publicDcCost}</span>
-                 <span className="font-display tabular-nums text-text-primary">RM {resultA.publicChargingCost.toFixed(2)}</span>
+               <div className="flex justify-between text-body pb-tight border-b border-border-subtle items-center gap-2">
+                 <span className="text-text-secondary truncate">{txt.publicDcCost}</span>
+                 <span className="font-display tabular-nums text-text-primary whitespace-nowrap shrink-0">RM {resultA.publicChargingCost.toFixed(2)}</span>
                </div>
-               <div className="flex justify-between text-body pt-tight">
-                 <span className="text-text-primary font-semibold">{txt.totalEvCharging}</span>
-                 <span className="font-display tabular-nums text-text-primary font-bold">RM {resultA.totalEvChargingCost.toFixed(2)}</span>
+               <div className="flex justify-between text-body pt-tight items-center gap-2">
+                 <span className="text-text-primary font-semibold truncate">{txt.totalEvCharging}</span>
+                 <span className="font-display tabular-nums text-text-primary font-bold whitespace-nowrap shrink-0">RM {resultA.totalEvChargingCost.toFixed(2)}</span>
                </div>
              </div>
            </div>
 
            {/* Anchor Nav */}
-           <div className="flex flex-wrap gap-2 pt-2">
+           <div className="flex flex-wrap gap-2 pt-1">
              <button
                onClick={() => document.getElementById('comparator')?.scrollIntoView({ behavior: 'smooth' })}
-               className="px-3 py-1.5 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary hover:text-text-primary active:scale-95 transition-colors"
+               className="px-3 py-1.5 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary hover:text-text-primary active:scale-95 transition-colors whitespace-nowrap"
              >
                {txt.seeComparator}
              </button>
              <button
                onClick={() => document.getElementById('roadtax')?.scrollIntoView({ behavior: 'smooth' })}
-               className="px-3 py-1.5 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary hover:text-text-primary active:scale-95 transition-colors"
+               className="px-3 py-1.5 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary hover:text-text-primary active:scale-95 transition-colors whitespace-nowrap"
              >
                {store.language === 'zh' ? '查看 2026 路税 ↓' : 'See Road Tax ↓'}
              </button>
              <button
                onClick={() => document.getElementById('tnb')?.scrollIntoView({ behavior: 'smooth' })}
-               className="px-3 py-1.5 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary hover:text-text-primary active:scale-95 transition-colors"
+               className="px-3 py-1.5 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary hover:text-text-primary active:scale-95 transition-colors whitespace-nowrap"
              >
                {txt.seeTnbAudit}
              </button>
@@ -181,10 +206,10 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
         {/* Section 2: Comparator */}
         <section id="comparator" className="space-y-stack-md">
-           <div className="flex flex-wrap items-center justify-between gap-2">
-             <h2 className="text-h3 text-text-primary font-semibold">{txt.comparatorTitle}</h2>
+           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+             <h2 className="text-h3 text-text-primary font-semibold whitespace-nowrap">{txt.comparatorTitle}</h2>
              {fiveYearTcoDiff !== 0 && (
-               <div className="flex items-center gap-1.5 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full text-caption text-brand-primary font-semibold shadow-sm">
+               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full text-caption text-brand-primary font-semibold shadow-sm w-fit whitespace-nowrap">
                  <Sparkles size={13} className="shrink-0" />
                  <span>
                    {fiveYearTcoDiff > 0
@@ -197,17 +222,17 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base overflow-hidden">
              
-             <div className="grid grid-cols-3 gap-2 text-caption text-text-secondary mb-3">
+             <div className="grid grid-cols-[1.1fr_1fr_1fr] gap-2 text-caption text-text-secondary mb-3 items-center">
                <div></div>
-               <div className="text-center p-2 bg-surface-overlay rounded border border-border-subtle">
-                 <span className="font-bold text-text-primary block truncate">{store.modelName}</span>
-                 <span className="text-brand-accent text-[11px] font-medium">{txt.activeInputs}</span>
+               <div className="text-center p-2 bg-surface-overlay rounded border border-border-subtle overflow-hidden">
+                 <span className="font-bold text-text-primary block truncate whitespace-nowrap">{store.modelName}</span>
+                 <span className="text-brand-accent text-[11px] font-medium whitespace-nowrap">{txt.activeInputs}</span>
                </div>
-               <div>
+               <div className="overflow-hidden">
                   <select 
                     value={comparatorVehicle.id}
                     onChange={e => setSelectedComparatorId(e.target.value)}
-                    className="w-full h-full p-2 bg-surface-overlay border border-border-subtle rounded text-center text-text-primary appearance-none outline-none font-medium cursor-pointer"
+                    className="w-full p-2 bg-surface-overlay border border-border-subtle rounded text-center text-text-primary appearance-none outline-none font-medium cursor-pointer truncate"
                   >
                     {PRESETS.map(p => (
                       <option key={p.id} value={p.id} className="bg-surface-base text-text-primary">
@@ -219,49 +244,49 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
              </div>
 
              <div className="space-y-0 divide-y divide-border-subtle">
-               <div className="grid grid-cols-3 py-2.5 text-body">
-                 <div className="text-text-secondary text-caption sm:text-body">{txt.motorKw}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary">{store.motorKw} kW</div>
-                 <div className="text-center font-display tabular-nums text-text-primary">{comparatorVehicle.motorKw} kW</div>
+               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
+                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.motorKw}</div>
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{store.motorKw} kW</div>
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{comparatorVehicle.motorKw} kW</div>
                </div>
-               <div className="grid grid-cols-3 py-2.5 text-body">
-                 <div className="text-text-secondary text-caption sm:text-body">{txt.batteryKwh}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary">{store.batteryKwh} kWh</div>
-                 <div className="text-center font-display tabular-nums text-text-primary">{comparatorVehicle.batteryKwh} kWh</div>
+               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
+                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.batteryKwh}</div>
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{store.batteryKwh} kWh</div>
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{comparatorVehicle.batteryKwh} kWh</div>
                </div>
-               <div className="grid grid-cols-3 py-2.5 text-body">
-                 <div className="text-text-secondary text-caption sm:text-body">{txt.cost100km}</div>
-                 <div className="text-center font-display tabular-nums font-semibold text-text-primary">
+               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
+                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.cost100km}</div>
+                 <div className="text-center font-display tabular-nums font-semibold text-text-primary whitespace-nowrap">
                     RM {resultA.evCostPer100Km.toFixed(2)}
                  </div>
-                 <div className="text-center font-display tabular-nums font-semibold text-text-primary">
+                 <div className="text-center font-display tabular-nums font-semibold text-text-primary whitespace-nowrap">
                     RM {resultB.evCostPer100Km.toFixed(2)}
                  </div>
                </div>
-               <div className="grid grid-cols-3 py-2.5 text-body">
-                 <div className="text-text-secondary text-caption sm:text-body">{txt.monthlyEvCost}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary">
+               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
+                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.monthlyEvCost}</div>
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
                     RM {resultA.totalEvChargingCost.toFixed(2)}
                  </div>
-                 <div className="text-center font-display tabular-nums text-text-primary">
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
                     RM {resultB.totalEvChargingCost.toFixed(2)}
                  </div>
                </div>
-               <div className="grid grid-cols-3 py-2.5 text-body">
-                 <div className="text-text-secondary text-caption sm:text-body">{txt.fiveYearEnergySavings}</div>
-                 <div className="text-center font-display tabular-nums font-bold text-status-positive">
+               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
+                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.fiveYearEnergySavings}</div>
+                 <div className="text-center font-display tabular-nums font-bold text-status-positive whitespace-nowrap">
                     RM {resultA.fiveYearNetSavings.toFixed(0)}
                  </div>
-                 <div className="text-center font-display tabular-nums font-bold text-status-positive">
+                 <div className="text-center font-display tabular-nums font-bold text-status-positive whitespace-nowrap">
                     RM {resultB.fiveYearNetSavings.toFixed(0)}
                  </div>
                </div>
-               <div className="grid grid-cols-3 py-2.5 text-body">
-                 <div className="text-text-secondary text-caption sm:text-body">{txt.roadTaxEvLabel}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary">
+               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
+                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.roadTaxEvLabel}</div>
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
                     RM {resultA.evRoadTaxAnnualRm} {txt.perYearUnit}
                  </div>
-                 <div className="text-center font-display tabular-nums text-text-primary">
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
                     RM {resultB.evRoadTaxAnnualRm} {txt.perYearUnit}
                  </div>
                </div>
@@ -274,7 +299,7 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
         <section id="roadtax" className="space-y-stack-md">
            <div className="flex items-center gap-2">
              <ShieldCheck size={20} className="text-brand-accent" />
-             <h2 className="text-h3 text-text-primary font-semibold">{txt.roadTaxSectionTitle}</h2>
+             <h2 className="text-h3 text-text-primary font-semibold whitespace-nowrap">{txt.roadTaxSectionTitle}</h2>
            </div>
            
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base space-y-4">
@@ -283,21 +308,21 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
              </p>
 
              {/* Benchmark ICE Displacement Picker */}
-             <div className="flex items-center justify-between border-y border-border-subtle py-3 text-body">
-               <span className="text-caption text-text-secondary">{txt.roadTaxIceCcSelect}</span>
-               <div className="flex gap-1.5">
+             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-y border-border-subtle py-3 gap-2 text-body">
+               <span className="text-caption text-text-secondary whitespace-nowrap">{txt.roadTaxIceCcSelect}</span>
+               <div className="grid grid-cols-3 gap-1.5 w-full sm:w-auto">
                  {[1500, 1800, 2000].map(cc => (
                    <button
                      key={cc}
                      type="button"
                      onClick={() => store.setPetrolEngineCc(cc)}
-                     className={`px-2.5 py-1 text-caption rounded border transition-colors ${
+                     className={`px-2.5 py-1 text-caption rounded border transition-colors whitespace-nowrap text-center ${
                        (store.petrolEngineCc || 1500) === cc
                          ? 'bg-brand-primary text-text-inverse border-brand-primary font-semibold shadow-sm'
                          : 'bg-surface-overlay text-text-secondary border-border-subtle hover:text-text-primary'
                      }`}
                    >
-                     {cc === 1500 ? '1.5L (RM 90)' : cc === 1800 ? '1.8L (RM 280)' : '2.0L (RM 380)'}
+                     {cc === 1500 ? '1.5L (RM90)' : cc === 1800 ? '1.8L (RM280)' : '2.0L (RM380)'}
                    </button>
                  ))}
                </div>
@@ -306,33 +331,33 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
              {/* Side by Side Tax comparison */}
              <div className="grid grid-cols-2 gap-3 pt-1">
                <div className="bg-surface-overlay border border-border-subtle rounded-lg p-3 text-center">
-                 <div className="text-[11px] text-text-secondary">{txt.roadTaxEvLabel} ({store.motorKw} kW)</div>
-                 <div className="text-h2 font-display font-bold text-text-primary mt-1 tabular-nums">
+                 <div className="text-[11px] text-text-secondary whitespace-nowrap">{txt.roadTaxEvLabel} ({store.motorKw} kW)</div>
+                 <div className="text-h2 font-display font-bold text-text-primary mt-1 tabular-nums whitespace-nowrap">
                    RM {resultA.evRoadTaxAnnualRm}
                  </div>
-                 <div className="text-[10px] text-text-secondary">{txt.perYearUnit}</div>
+                 <div className="text-[10px] text-text-secondary whitespace-nowrap">{txt.perYearUnit}</div>
                </div>
 
                <div className="bg-surface-overlay border border-border-subtle rounded-lg p-3 text-center">
-                 <div className="text-[11px] text-text-secondary">{txt.roadTaxIceLabel} ({store.petrolEngineCc || 1500} cc)</div>
-                 <div className="text-h2 font-display font-bold text-text-primary mt-1 tabular-nums">
+                 <div className="text-[11px] text-text-secondary whitespace-nowrap">{txt.roadTaxIceLabel} ({store.petrolEngineCc || 1500} cc)</div>
+                 <div className="text-h2 font-display font-bold text-text-primary mt-1 tabular-nums whitespace-nowrap">
                    RM {resultA.petrolRoadTaxAnnualRm}
                  </div>
-                 <div className="text-[10px] text-text-secondary">{txt.perYearUnit}</div>
+                 <div className="text-[10px] text-text-secondary whitespace-nowrap">{txt.perYearUnit}</div>
                </div>
              </div>
 
              {/* Summary Delta Banner */}
-             <div className="p-3 bg-surface-overlay/80 border border-border-subtle rounded-lg flex justify-between items-center text-body">
-               <div>
-                 <div className="text-caption font-medium text-text-primary">{txt.annualDiff}</div>
-                 <div className="text-[11px] text-text-secondary mt-0.5">
+             <div className="p-3 bg-surface-overlay/80 border border-border-subtle rounded-lg flex justify-between items-center text-body gap-2">
+               <div className="truncate">
+                 <div className="text-caption font-medium text-text-primary whitespace-nowrap">{txt.annualDiff}</div>
+                 <div className="text-[11px] text-text-secondary mt-0.5 truncate">
                    {resultA.annualRoadTaxDifferenceRm >= 0
-                     ? (store.language === 'zh' ? '纯电每年节省路税' : 'EV saves on road tax')
-                     : (store.language === 'zh' ? '纯电每年多缴路税' : 'EV pays more road tax')}
+                     ? (store.language === 'zh' ? '纯电每年少付路税' : 'EV saves on road tax')
+                     : (store.language === 'zh' ? '纯电每年多付路税' : 'EV pays more road tax')}
                  </div>
                </div>
-               <div className={`font-display font-bold text-body-lg tabular-nums ${
+               <div className={`font-display font-bold text-body-lg tabular-nums whitespace-nowrap shrink-0 ${
                  resultA.annualRoadTaxDifferenceRm >= 0 ? 'text-status-positive' : 'text-status-warning'
                }`}>
                  {resultA.annualRoadTaxDifferenceRm >= 0 ? '+' : ''}RM {resultA.annualRoadTaxDifferenceRm.toFixed(2)} {txt.perYearUnit}
@@ -343,7 +368,7 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
         {/* Section 4: TNB Bill Audit */}
         <section id="tnb" className="space-y-stack-md">
-           <h2 className="text-h3 text-text-primary font-semibold">{txt.tnbAuditTitle}</h2>
+           <h2 className="text-h3 text-text-primary font-semibold whitespace-nowrap">{txt.tnbAuditTitle}</h2>
            
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base">
              
@@ -361,14 +386,14 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
              <div className="overflow-x-auto">
                <table className="w-full text-left text-body">
                  <thead>
-                   <tr className="text-caption text-text-secondary border-b border-border-subtle">
+                   <tr className="text-caption text-text-secondary border-b border-border-subtle whitespace-nowrap">
                      <th className="font-normal py-2 pr-2">{txt.tableItem}</th>
                      <th className="font-normal py-2 px-2 text-right">{txt.tableBaseline}</th>
                      <th className="font-normal py-2 px-2 text-right">{txt.tableNew}</th>
                      <th className="font-normal py-2 pl-2 text-right">{txt.tableDelta}</th>
                    </tr>
                  </thead>
-                 <tbody className="divide-y divide-border-subtle font-display tabular-nums text-text-primary">
+                 <tbody className="divide-y divide-border-subtle font-display tabular-nums text-text-primary whitespace-nowrap">
                    <tr>
                      <td className="py-3 text-text-secondary font-body pr-2">{txt.baseGen}</td>
                      <td className="py-3 px-2 text-right">{resultA.baselineBill.baseEnergySubtotal.toFixed(2)}</td>
@@ -395,7 +420,7 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
                    </tr>
                  </tbody>
                  <tfoot>
-                   <tr className="border-t border-border-subtle font-semibold">
+                   <tr className="border-t border-border-subtle font-semibold whitespace-nowrap">
                      <td className="py-3 text-text-primary font-body pr-2">{txt.totalRm}</td>
                      <td className="py-3 px-2 text-right font-display tabular-nums text-text-primary">{resultA.baselineBill.totalAmount.toFixed(2)}</td>
                      <td className="py-3 px-2 text-right font-display tabular-nums text-text-primary">{resultA.newCombinedBill.totalAmount.toFixed(2)}</td>
@@ -406,6 +431,34 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
              </div>
 
            </div>
+        </section>
+
+        {/* Section 5: Quick Share Section */}
+        <section className="bg-surface-base border border-border-subtle rounded-xl p-base flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-center sm:text-left">
+            <h3 className="text-body font-semibold text-text-primary whitespace-nowrap">
+              {store.language === 'zh' ? '保存或分享测算结果' : 'Share or Save Verdict'}
+            </h3>
+            <p className="text-caption text-text-secondary mt-0.5 whitespace-nowrap">
+              {store.language === 'zh' ? '一键生成试驾精算摘要发给家人或销售' : 'Send summary report via WhatsApp or clipboard'}
+            </p>
+          </div>
+          <div className="flex w-full sm:w-auto gap-2">
+            <button
+              onClick={handleCopyReport}
+              className="flex-1 sm:flex-initial px-4 py-2 bg-surface-overlay border border-border-subtle rounded-lg text-caption font-medium text-text-primary hover:border-brand-primary active:scale-95 transition-all flex items-center justify-center space-x-1.5 whitespace-nowrap"
+            >
+              {copied ? <Check size={14} className="text-status-positive" /> : <Copy size={14} />}
+              <span>{copied ? txt.copied : txt.copyReport}</span>
+            </button>
+            <button
+              onClick={handleWhatsAppShare}
+              className="flex-1 sm:flex-initial px-4 py-2 bg-[#25D366] text-white rounded-lg text-caption font-semibold hover:opacity-90 active:scale-95 transition-all flex items-center justify-center space-x-1.5 whitespace-nowrap shadow-sm"
+            >
+              <Share2 size={14} />
+              <span>WhatsApp</span>
+            </button>
+          </div>
         </section>
 
       </main>
