@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, ChevronRight, Moon, Sun, ArrowLeftRight } from 'lucide-react';
+import { Settings, ChevronRight, Moon, Sun, ArrowLeftRight, Car, Pencil, X } from 'lucide-react';
 import { useCalculatorStore } from '../stores/calculator.store';
 import { PRESETS } from '../data/presets';
 import { AdvancedDrawer } from '../components/advanced-drawer';
@@ -9,6 +9,7 @@ import { calculateTnbBill, estimateKwhFromTnbBill } from '../utils/tnbTariff';
 export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: () => void }) {
   const {
     selectedPresetId, setPreset,
+    modelName, setModelName,
     consumption, setConsumption,
     mileage, setMileage,
     baselineKwh, setBaselineKwh,
@@ -19,6 +20,16 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [homeDisplayMode, setHomeDisplayMode] = useState<'kwh' | 'rm'>('kwh');
   const [localRmValue, setLocalRmValue] = useState<string>('');
+  const [isEditingModel, setIsEditingModel] = useState(false);
+  const [tempModelName, setTempModelName] = useState(modelName);
+
+  const currentPreset = PRESETS.find(p => p.id === selectedPresetId);
+  const isCustomConsumption = currentPreset ? Math.abs(consumption - currentPreset.consumption) > 0.05 : true;
+
+  // Sync tempModelName when store modelName changes externally
+  useEffect(() => {
+    setTempModelName(modelName);
+  }, [modelName]);
 
   const currentTnbBill = calculateTnbBill(baselineKwh);
 
@@ -111,14 +122,89 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
                </button>
             </div>
 
+            {/* Custom Consumption Model Name Remark Banner */}
+            {isCustomConsumption && (
+              <div className="pt-1">
+                {isEditingModel ? (
+                  <div className="flex items-center space-x-2 p-2 bg-surface-overlay border border-brand-primary rounded-lg text-caption animate-fade-in">
+                    <Car size={15} className="text-brand-primary shrink-0" />
+                    <input
+                      type="text"
+                      value={tempModelName}
+                      onChange={e => setTempModelName(e.target.value)}
+                      placeholder={language === 'zh' ? '输入自定义车型备注，例如: Proton e.MAS 7 试驾版' : 'e.g. Proton e.MAS 7 Test Drive'}
+                      className="flex-1 bg-transparent text-text-primary outline-none text-caption"
+                      autoFocus
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          if (tempModelName.trim()) setModelName(tempModelName.trim());
+                          setIsEditingModel(false);
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (tempModelName.trim()) setModelName(tempModelName.trim());
+                        setIsEditingModel(false);
+                      }}
+                      className="px-2.5 py-1 bg-brand-primary text-text-inverse rounded font-medium text-[11px] hover:opacity-90 active:scale-95 transition-all whitespace-nowrap"
+                    >
+                      {language === 'zh' ? '保存' : 'Save'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsEditingModel(false)}
+                      className="p-1 text-text-secondary hover:text-text-primary active:scale-95 transition-all"
+                      aria-label="Cancel"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between p-2.5 bg-brand-primary/10 border border-brand-primary/30 rounded-lg text-caption text-text-primary gap-2 animate-fade-in">
+                    <div className="flex items-center space-x-2 truncate">
+                      <Car size={15} className="text-brand-primary shrink-0" />
+                      <span className="truncate text-text-secondary">
+                        {language === 'zh' ? (
+                          <>
+                            已调整电耗。车型备注：<strong className="text-text-primary font-semibold">{modelName}</strong>
+                          </>
+                        ) : (
+                          <>
+                            Custom consumption. Model: <strong className="text-text-primary font-semibold">{modelName}</strong>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTempModelName(modelName);
+                        setIsEditingModel(true);
+                      }}
+                      className="px-2.5 py-1 bg-surface-overlay border border-border-subtle hover:border-brand-primary text-text-primary rounded font-medium shrink-0 hover:text-brand-primary active:scale-95 transition-all text-[11px] whitespace-nowrap flex items-center space-x-1 shadow-xs"
+                    >
+                      <Pencil size={11} />
+                      <span>{language === 'zh' ? '修改车型备注' : 'Note Model'}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Presets Carousel */}
             <div className="flex overflow-x-auto space-x-tight pb-2 -mx-base px-base snap-x hide-scrollbar">
               {PRESETS.map(p => {
-                const isSelected = selectedPresetId === p.id;
+                const isSelected = selectedPresetId === p.id && !isCustomConsumption;
                 return (
                   <button
                     key={p.id}
-                    onClick={() => setPreset(p.id)}
+                    onClick={() => {
+                      setPreset(p.id);
+                      setIsEditingModel(false);
+                      setTempModelName(p.name);
+                    }}
                     className={`shrink-0 snap-start px-snug py-tight rounded-md border text-caption whitespace-nowrap transition-colors ${isSelected ? 'bg-brand-primary text-text-inverse border-brand-primary font-semibold' : 'bg-surface-overlay border-border-subtle text-text-secondary'}`}
                   >
                     {p.name}

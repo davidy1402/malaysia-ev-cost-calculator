@@ -22,6 +22,7 @@ export interface CalculatorState {
     touEnabled: boolean;
   };
   setPreset: (presetId: string) => void;
+  setModelName: (name: string) => void;
   setConsumption: (c: number) => void;
   setMileage: (m: number) => void;
   setBaselineKwh: (k: number) => void;
@@ -85,6 +86,7 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
       });
     }
   },
+  setModelName: (name) => set({ modelName: name }),
   setConsumption: (c) => set({ consumption: c }),
   setMileage: (m) => set({ mileage: m }),
   setBaselineKwh: (k) => set({ baselineKwh: k }),
