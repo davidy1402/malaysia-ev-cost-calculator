@@ -6,6 +6,6 @@ interface ResultsState {
 }
 
 export const useResultsStore = create<ResultsState>((set) => ({
-  selectedComparatorId: 'proton-emas7',
+  selectedComparatorId: 'atto3',
   setSelectedComparatorId: (id) => set({ selectedComparatorId: id }),
 }));

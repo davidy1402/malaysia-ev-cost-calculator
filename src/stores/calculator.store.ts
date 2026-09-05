@@ -1,10 +1,16 @@
 import { create } from 'zustand';
+import { PRESETS } from '../data/presets';
 
 export interface CalculatorState {
+  selectedPresetId: string;
+  modelName: string;
   consumption: number;
+  motorKw: number;
+  batteryKwh: number;
   mileage: number;
   baselineKwh: number;
   petrolRm: number;
+  petrolEngineCc: number;
   mode: 'mixed' | 'home';
   language: 'en' | 'zh';
   theme: 'dark' | 'light';
@@ -15,10 +21,12 @@ export interface CalculatorState {
     publicDcRate: number;
     touEnabled: boolean;
   };
+  setPreset: (presetId: string) => void;
   setConsumption: (c: number) => void;
   setMileage: (m: number) => void;
   setBaselineKwh: (k: number) => void;
   setPetrolRm: (p: number) => void;
+  setPetrolEngineCc: (cc: number) => void;
   setMode: (m: 'mixed' | 'home') => void;
   setLanguage: (l: 'en' | 'zh') => void;
   setTheme: (t: 'dark' | 'light') => void;
@@ -46,10 +54,15 @@ const getInitialLanguage = (): 'en' | 'zh' => {
 };
 
 export const useCalculatorStore = create<CalculatorState>((set) => ({
+  selectedPresetId: 'emas7',
+  modelName: 'Proton e.MAS 7',
   consumption: 14.5,
+  motorKw: 160,
+  batteryKwh: 49.52,
   mileage: 1477,
   baselineKwh: 501,
   petrolRm: 210,
+  petrolEngineCc: 1500,
   mode: 'mixed',
   language: getInitialLanguage(),
   theme: getInitialTheme(),
@@ -60,10 +73,23 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
     publicDcRate: 1.4,
     touEnabled: false,
   },
+  setPreset: (presetId: string) => {
+    const preset = PRESETS.find((p) => p.id === presetId);
+    if (preset) {
+      set({
+        selectedPresetId: preset.id,
+        modelName: preset.name,
+        consumption: preset.consumption,
+        motorKw: preset.motorKw,
+        batteryKwh: preset.batteryKwh
+      });
+    }
+  },
   setConsumption: (c) => set({ consumption: c }),
   setMileage: (m) => set({ mileage: m }),
   setBaselineKwh: (k) => set({ baselineKwh: k }),
   setPetrolRm: (p) => set({ petrolRm: p }),
+  setPetrolEngineCc: (cc) => set({ petrolEngineCc: cc }),
   setMode: (m) => set({ mode: m }),
   setLanguage: (l) => {
     try {

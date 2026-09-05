@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { Settings, ChevronRight, Moon, Sun } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings, ChevronRight, Moon, Sun, ArrowLeftRight } from 'lucide-react';
 import { useCalculatorStore } from '../stores/calculator.store';
 import { PRESETS } from '../data/presets';
 import { AdvancedDrawer } from '../components/advanced-drawer';
 import { evCalcTranslations } from '../i18n/evCalcTranslations';
+import { calculateTnbBill, estimateKwhFromTnbBill } from '../utils/tnbTariff';
 
 export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: () => void }) {
   const {
+    selectedPresetId, setPreset,
     consumption, setConsumption,
     mileage, setMileage,
     baselineKwh, setBaselineKwh,
@@ -16,6 +18,25 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
   } = useCalculatorStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [homeDisplayMode, setHomeDisplayMode] = useState<'kwh' | 'rm'>('kwh');
+  const [localRmValue, setLocalRmValue] = useState<string>('');
+
+  const currentTnbBill = calculateTnbBill(baselineKwh);
+
+  // Sync local RM value when switching to RM mode or when baseline changes externally
+  useEffect(() => {
+    if (homeDisplayMode === 'rm') {
+      setLocalRmValue(currentTnbBill.totalAmount.toFixed(2));
+    }
+  }, [homeDisplayMode]);
+
+  const handleToggleDisplayMode = () => {
+    if (homeDisplayMode === 'kwh') {
+      setLocalRmValue(currentTnbBill.totalAmount.toFixed(2));
+      setHomeDisplayMode('rm');
+    } else {
+      setHomeDisplayMode('kwh');
+    }
+  };
 
   const txt = evCalcTranslations[language] || evCalcTranslations.en;
 
@@ -75,15 +96,18 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
 
             {/* Presets Carousel */}
             <div className="flex overflow-x-auto space-x-tight pb-2 -mx-base px-base snap-x hide-scrollbar">
-              {PRESETS.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => setConsumption(p.consumption)}
-                  className={`shrink-0 snap-start px-snug py-tight rounded-md border text-caption whitespace-nowrap transition-colors ${consumption === p.consumption ? 'bg-brand-primary text-text-inverse border-brand-primary font-semibold' : 'bg-surface-overlay border-border-subtle text-text-secondary'}`}
-                >
-                  {p.name}
-                </button>
-              ))}
+              {PRESETS.map(p => {
+                const isSelected = selectedPresetId === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => setPreset(p.id)}
+                    className={`shrink-0 snap-start px-snug py-tight rounded-md border text-caption whitespace-nowrap transition-colors ${isSelected ? 'bg-brand-primary text-text-inverse border-brand-primary font-semibold' : 'bg-surface-overlay border-border-subtle text-text-secondary'}`}
+                  >
+                    {p.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -115,22 +139,54 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
 
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base flex justify-between items-center">
              <div>
-               <div className="text-caption text-text-secondary">{txt.homeElectricityTitle}</div>
+               <div className="text-caption text-text-secondary flex items-center gap-1.5">
+                 <span>{txt.homeElectricityTitle}</span>
+                 <span className="text-[11px] text-text-secondary/70 font-mono">
+                   {homeDisplayMode === 'kwh'
+                     ? `(≈ RM ${currentTnbBill.totalAmount.toFixed(2)} / ${language === 'zh' ? '月' : 'mo'})`
+                     : `(≈ ${baselineKwh} kWh / ${language === 'zh' ? '月' : 'mo'})`}
+                 </span>
+               </div>
                <div className="flex items-center space-x-2 mt-1">
-                 <input 
-                   type="number" 
-                   value={baselineKwh}
-                   onChange={e => setBaselineKwh(Number(e.target.value))}
-                   className="bg-transparent text-h3 font-display tabular-nums text-text-primary w-20 outline-none"
-                 />
-                 <span className="text-body text-text-secondary">{txt.kwhUnit}</span>
+                 {homeDisplayMode === 'rm' && (
+                   <span className="text-body text-text-secondary font-medium">RM</span>
+                 )}
+                 {homeDisplayMode === 'kwh' ? (
+                   <input 
+                     type="number" 
+                     value={baselineKwh}
+                     onChange={e => setBaselineKwh(Math.max(0, Number(e.target.value)))}
+                     className="bg-transparent text-h3 font-display tabular-nums text-text-primary w-24 outline-none"
+                   />
+                 ) : (
+                   <input 
+                     type="number" 
+                     step="0.01"
+                     value={localRmValue}
+                     onChange={e => {
+                       setLocalRmValue(e.target.value);
+                       const val = parseFloat(e.target.value);
+                       if (!isNaN(val) && val >= 0) {
+                         setBaselineKwh(estimateKwhFromTnbBill(val));
+                       }
+                     }}
+                     className="bg-transparent text-h3 font-display tabular-nums text-text-primary w-24 outline-none"
+                   />
+                 )}
+                 {homeDisplayMode === 'kwh' && (
+                   <span className="text-body text-text-secondary">{txt.kwhUnit}</span>
+                 )}
                </div>
              </div>
              <button
-                onClick={() => setHomeDisplayMode(homeDisplayMode === 'kwh' ? 'rm' : 'kwh')}
-                className="px-3 py-1 text-caption bg-surface-overlay border border-border-subtle rounded text-text-secondary flex items-center hover:text-text-primary active:scale-95 transition-colors"
+                type="button"
+                onClick={handleToggleDisplayMode}
+                className="px-2.5 py-1 text-caption bg-surface-overlay border border-border-subtle rounded text-text-secondary flex items-center space-x-1 hover:text-text-primary hover:border-brand-primary active:scale-95 transition-all shadow-sm"
+                title={language === 'zh' ? '点击在 kWh 用电度数与 RM 账单金额之间切换' : 'Toggle between kWh usage and RM bill amount'}
               >
-                {homeDisplayMode === 'kwh' ? 'kWh ↔ RM' : 'RM ↔ kWh'}
+                <span className={`transition-colors ${homeDisplayMode === 'kwh' ? 'text-brand-accent font-bold' : 'text-text-secondary'}`}>kWh</span>
+                <ArrowLeftRight size={12} className="text-text-secondary" />
+                <span className={`transition-colors ${homeDisplayMode === 'rm' ? 'text-brand-accent font-bold' : 'text-text-secondary'}`}>RM</span>
               </button>
            </div>
 

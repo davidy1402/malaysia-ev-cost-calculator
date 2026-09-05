@@ -39,6 +39,21 @@ export interface AppTranslations {
   motorKw: string;
   batteryKwh: string;
   cost100km: string;
+  monthlyEvCost: string;
+  fiveYearEnergySavings: string;
+  winnerTag: string;
+  tieTag: string;
+
+  // Road Tax & TCO
+  roadTaxSectionTitle: string;
+  roadTaxSub: string;
+  roadTaxEvLabel: string;
+  roadTaxIceLabel: string;
+  roadTaxIceCcSelect: string;
+  annualDiff: string;
+  fiveYearTcoAdvantage: string;
+  perYearUnit: string;
+  perMonthUnit: string;
 
   // TNB Audit
   tnbAuditTitle: string;
@@ -107,6 +122,21 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     motorKw: 'Motor kW',
     batteryKwh: 'Battery kWh',
     cost100km: '100km Cost',
+    monthlyEvCost: 'Monthly Charging',
+    fiveYearEnergySavings: '5-Yr Fuel Savings',
+    winnerTag: '{car} saves RM {amount} more over 5 years',
+    tieTag: 'Equal 5-year savings',
+
+    // Road Tax & TCO
+    roadTaxSectionTitle: '2026 Malaysia Road Tax Comparison',
+    roadTaxSub: 'Official JPJ Gazette: EV kW rating vs Petrol ICE engine capacity',
+    roadTaxEvLabel: '2026 EV Road Tax',
+    roadTaxIceLabel: 'Petrol ICE Road Tax',
+    roadTaxIceCcSelect: 'Benchmark ICE engine',
+    annualDiff: 'Annual Road Tax Delta',
+    fiveYearTcoAdvantage: '5-Year Net TCO Advantage',
+    perYearUnit: '/ year',
+    perMonthUnit: '/ mo',
 
     // TNB Audit
     tnbAuditTitle: 'Real TNB Bill Breakdown',
@@ -173,6 +203,21 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     motorKw: '电机功率 (kW)',
     batteryKwh: '电池容量 (kWh)',
     cost100km: '百公里花费',
+    monthlyEvCost: '每月补能花费',
+    fiveYearEnergySavings: '5年油电净省',
+    winnerTag: '{car} 5年多省 RM {amount}',
+    tieTag: '5年节省总额相当',
+
+    // Road Tax & TCO
+    roadTaxSectionTitle: '2026 马来西亚新路税精算对比',
+    roadTaxSub: '官方 MOT/JPJ 宪报标准：纯电 kW 功率阶梯 vs 油车 cc 排量税率',
+    roadTaxEvLabel: '2026 纯电路税',
+    roadTaxIceLabel: '燃油车基准路税',
+    roadTaxIceCcSelect: '对比燃油排量',
+    annualDiff: '每年路税差额',
+    fiveYearTcoAdvantage: '5年真实 TCO 综合优势',
+    perYearUnit: '/ 年',
+    perMonthUnit: '/ 月',
 
     // TNB Audit
     tnbAuditTitle: 'TNB 真实账单拆解审计',
