@@ -24,7 +24,9 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
   const [tempModelName, setTempModelName] = useState(modelName);
 
   const currentPreset = PRESETS.find(p => p.id === selectedPresetId);
-  const isCustomConsumption = currentPreset ? Math.abs(consumption - currentPreset.consumption) > 0.05 : true;
+  const isCustomConsumption = currentPreset
+    ? Math.abs(consumption - currentPreset.consumption) > 0.05 || modelName !== currentPreset.name
+    : true;
 
   // Sync tempModelName when store modelName changes externally
   useEffect(() => {
