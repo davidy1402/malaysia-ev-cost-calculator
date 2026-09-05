@@ -27,7 +27,10 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
         
         {/* Header */}
         <header className="flex justify-between items-center py-base">
-          <h1 className="text-h2 font-display text-text-primary tracking-tight">{txt.appTitle}</h1>
+          <div className="flex items-center space-x-2.5">
+            <img src="./logo.png" alt="EV Calc MY" className="w-8 h-8 rounded-lg shadow-sm" />
+            <h1 className="text-h2 font-display text-text-primary tracking-tight">{txt.appTitle}</h1>
+          </div>
           <div className="flex space-x-3">
              <button
                onClick={() => setLanguage(language === 'en' ? 'zh' : 'en')}

@@ -1,9 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-:root {
+:root,
+html.dark {
   --background-default: hsl(220 6% 8%);
   --surface-base: hsl(220 5% 11%);
   --surface-raised: hsl(220 6% 14%);
@@ -28,7 +28,8 @@
   --safe-area-inset-bottom: 0px;
 }
 
-.light {
+html.light,
+html:not(.dark) {
   --background-default: hsl(210 20% 98%);
   --surface-base: hsl(0 0% 100%);
   --surface-raised: hsl(210 20% 95%);
@@ -45,6 +46,7 @@
   --status-warning: hsl(15 85% 50%);
   --status-error: hsl(0 80% 55%);
   --status-info: hsl(212 72% 50%);
+  --focus-ring-default: hsl(37 93% 45%);
 }
 
 @theme inline {

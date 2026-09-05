@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, Info } from 'lucide-react';
+import { ChevronLeft, Info, Sun, Moon } from 'lucide-react';
 import { useCalculatorStore } from '../stores/calculator.store';
 import { useResultsStore } from '../stores/results.store';
 import { calculateEv, calculateTnbBill } from '../utils/calculator';
@@ -58,11 +58,21 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
     <div className="relative min-h-screen bg-background-default antialiased pb-[calc(40px+env(safe-area-inset-bottom))]">
       
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background-default/80 backdrop-blur-md border-b border-border-subtle pt-[env(safe-area-inset-top)] px-base py-tight flex items-center">
-        <button onClick={onBack} className="p-2 -ml-2 text-text-secondary hover:text-text-primary active:scale-[0.98]" aria-label="Back">
-          <ChevronLeft size={24} />
+      <header className="sticky top-0 z-50 bg-background-default/80 backdrop-blur-md border-b border-border-subtle pt-[env(safe-area-inset-top)] px-base py-tight flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <button onClick={onBack} className="p-2 -ml-2 text-text-secondary hover:text-text-primary active:scale-[0.98]" aria-label="Back">
+            <ChevronLeft size={24} />
+          </button>
+          <img src="./logo.png" alt="EV Calc MY" className="w-6 h-6 rounded-md shadow-sm ml-1" />
+          <h1 className="text-body-lg font-semibold text-text-primary">{txt.verdictTitle}</h1>
+        </div>
+        <button
+          onClick={() => store.setTheme(store.theme === 'dark' ? 'light' : 'dark')}
+          className="p-1 text-text-secondary hover:text-text-primary active:scale-95 transition-colors"
+          aria-label="Toggle theme"
+        >
+          {store.theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
         </button>
-        <h1 className="ml-2 text-body-lg font-semibold text-text-primary">{txt.verdictTitle}</h1>
       </header>
 
       <main className="px-base py-section space-y-section-y">
