@@ -80,15 +80,32 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
             
             <div className="flex justify-center items-center space-x-loose">
                <button 
-                  onClick={() => setConsumption(Math.max(5, consumption - 0.5))}
-                  className="w-10 h-10 rounded-full border border-border-subtle flex items-center justify-center text-text-primary active:bg-surface-overlay"
+                  type="button"
+                  onClick={() => setConsumption(Math.max(5, Math.round((consumption - 0.1) * 10) / 10))}
+                  className="w-10 h-10 rounded-full border border-border-subtle flex items-center justify-center text-text-primary active:bg-surface-overlay active:scale-95 transition-all text-h3 select-none"
+                  aria-label="Decrease by 0.1"
                >
                  -
                </button>
-               <div className="text-h1 font-display text-text-primary w-24 text-center tabular-nums">{consumption.toFixed(1)}</div>
+               <input
+                 type="number"
+                 step="0.1"
+                 min="5"
+                 max="40"
+                 value={consumption}
+                 onChange={(e) => {
+                   const val = parseFloat(e.target.value);
+                   if (!isNaN(val)) {
+                     setConsumption(Math.round(val * 10) / 10);
+                   }
+                 }}
+                 className="text-h1 font-display text-text-primary w-28 text-center tabular-nums bg-transparent outline-none focus:border-b focus:border-brand-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+               />
                <button 
-                  onClick={() => setConsumption(Math.min(30, consumption + 0.5))}
-                  className="w-10 h-10 rounded-full border border-border-subtle flex items-center justify-center text-text-primary active:bg-surface-overlay"
+                  type="button"
+                  onClick={() => setConsumption(Math.min(40, Math.round((consumption + 0.1) * 10) / 10))}
+                  className="w-10 h-10 rounded-full border border-border-subtle flex items-center justify-center text-text-primary active:bg-surface-overlay active:scale-95 transition-all text-h3 select-none"
+                  aria-label="Increase by 0.1"
                >
                  +
                </button>
