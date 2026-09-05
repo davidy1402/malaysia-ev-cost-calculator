@@ -158,8 +158,9 @@ export function calculateAllEvMetrics(inputs: UserInputs): EvCalculationResult {
   
   // Home vs Public Split Ratio
   const isHomeOnly = inputs.chargingMode === 'home_only';
-  const homeRatio = isHomeOnly ? 1.0 : (inputs.homeChargingRatio || 0.90);
-  const publicRatio = 1.0 - homeRatio;
+  const isPublicOnly = inputs.chargingMode === 'public_only';
+  const homeRatio = isHomeOnly ? 1.0 : isPublicOnly ? 0.0 : (typeof inputs.homeChargingRatio === 'number' ? inputs.homeChargingRatio : 0.90);
+  const publicRatio = Math.max(0, 1.0 - homeRatio);
 
   // Step 1: EV Net Consumption at the vehicle/battery
   const evMonthlyNetKwh = (distanceKm / 100) * consumptionKwhPer100Km;

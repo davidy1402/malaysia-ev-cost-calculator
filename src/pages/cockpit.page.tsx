@@ -14,6 +14,7 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
     mileage, setMileage,
     baselineKwh, setBaselineKwh,
     petrolRm, setPetrolRm,
+    mode, setMode,
     language, setLanguage,
     theme, setTheme
   } = useCalculatorStore();
@@ -220,6 +221,37 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
         {/* Inputs */}
         <section className="space-y-stack-md">
            
+           {/* Charging Environment: Landed vs Condo Pill */}
+           <div className="bg-surface-base border border-border-subtle rounded-xl p-base space-y-2">
+             <div className="flex justify-between items-center">
+               <span className="text-caption text-text-secondary">{txt.chargingSetupTitle}</span>
+             </div>
+             <div className="grid grid-cols-2 gap-1.5 p-1 bg-surface-overlay rounded-lg border border-border-subtle">
+               <button
+                 type="button"
+                 onClick={() => setMode('landed')}
+                 className={`py-2 px-1.5 rounded-md font-medium transition-all text-center whitespace-nowrap text-[12px] sm:text-caption ${
+                   mode !== 'condo'
+                     ? 'bg-brand-primary text-text-inverse font-semibold shadow-xs'
+                     : 'text-text-secondary hover:text-text-primary'
+                 }`}
+               >
+                 {txt.setupLanded}
+               </button>
+               <button
+                 type="button"
+                 onClick={() => setMode('condo')}
+                 className={`py-2 px-1.5 rounded-md font-medium transition-all text-center whitespace-nowrap text-[12px] sm:text-caption ${
+                   mode === 'condo'
+                     ? 'bg-brand-primary text-text-inverse font-semibold shadow-xs'
+                     : 'text-text-secondary hover:text-text-primary'
+                 }`}
+               >
+                 {txt.setupCondo}
+               </button>
+             </div>
+           </div>
+
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base flex justify-between items-center">
              <div>
                <div className="text-caption text-text-secondary">{txt.monthlyMileageTitle}</div>

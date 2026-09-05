@@ -29,8 +29,8 @@ export interface UserInputs {
   fatherPetrolCostRm: number; // 爸爸每月固定油费 RM 210
   petrolEngineCc: number; // 默认 1500 cc (1.5L ICE)
 
-  // 充电模式切换: 'mixed' (90%家充+10%外充) vs 'home_only' (100%全家充)
-  chargingMode: 'mixed' | 'home_only';
+  // 充电模式切换: 'mixed' (90%家充+10%外充) vs 'home_only' (100%全家充) vs 'public_only' (100%快充)
+  chargingMode: 'mixed' | 'home_only' | 'public_only';
 
   // 核心参数
   petrolPricePerLiter: number; // RM 1.99 / L

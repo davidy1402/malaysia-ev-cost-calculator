@@ -8,6 +8,9 @@ export interface AppTranslations {
   monthlyMileageTitle: string;
   mileageUnit: string;
   homeElectricityTitle: string;
+  chargingSetupTitle: string;
+  setupLanded: string;
+  setupCondo: string;
   kwhUnit: string;
   kwhRmToggle: string;
   monthlyPetrolTitle: string;
@@ -95,6 +98,9 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     monthlyMileageTitle: 'Monthly Distance',
     mileageUnit: 'km',
     homeElectricityTitle: 'Home Electricity',
+    chargingSetupTitle: 'Charging Setup',
+    setupLanded: 'Landed (90% Home AC)',
+    setupCondo: 'Condo (100% Public DC)',
     kwhUnit: 'kWh',
     kwhRmToggle: 'kWh ↔ RM',
     monthlyPetrolTitle: 'Current Monthly Petrol Spend',
@@ -180,6 +186,9 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     monthlyMileageTitle: '每月行驶里程',
     mileageUnit: 'km',
     homeElectricityTitle: '家里每月用电',
+    chargingSetupTitle: '充电条件',
+    setupLanded: '排屋有家充 (90% 家充)',
+    setupCondo: '公寓无家充 (全靠公共快充)',
     kwhUnit: 'kWh',
     kwhRmToggle: 'kWh ↔ RM',
     monthlyPetrolTitle: '目前每月油费',

@@ -11,7 +11,7 @@ export interface CalculatorState {
   baselineKwh: number;
   petrolRm: number;
   petrolEngineCc: number;
-  mode: 'mixed' | 'home';
+  mode: 'landed' | 'condo';
   language: 'en' | 'zh';
   theme: 'dark' | 'light';
   advanced: {
@@ -28,7 +28,7 @@ export interface CalculatorState {
   setBaselineKwh: (k: number) => void;
   setPetrolRm: (p: number) => void;
   setPetrolEngineCc: (cc: number) => void;
-  setMode: (m: 'mixed' | 'home') => void;
+  setMode: (m: 'landed' | 'condo') => void;
   setLanguage: (l: 'en' | 'zh') => void;
   setTheme: (t: 'dark' | 'light') => void;
   updateAdvanced: (updates: Partial<CalculatorState['advanced']>) => void;
@@ -64,7 +64,7 @@ export const useCalculatorStore = create<CalculatorState>((set) => ({
   baselineKwh: 501,
   petrolRm: 210,
   petrolEngineCc: 1500,
-  mode: 'mixed',
+  mode: 'landed',
   language: getInitialLanguage(),
   theme: getInitialTheme(),
   advanced: {
