@@ -1,6 +1,6 @@
 import { Share, X, Check } from 'lucide-react';
 import { useCalculatorStore } from '../stores/calculator.store';
-import { calculateEv } from '../utils/calculator';
+import { calculateAllEvMetrics } from '../utils/tnbTariff';
 import { useState } from 'react';
 import { evCalcTranslations } from '../i18n/evCalcTranslations';
 
@@ -10,20 +10,42 @@ interface AdvancedDrawerProps {
 }
 
 export function AdvancedDrawer({ isOpen, onClose }: AdvancedDrawerProps) {
-  const { advanced, updateAdvanced, consumption, mileage, baselineKwh, petrolRm, mode, language } = useCalculatorStore();
+  const store = useCalculatorStore();
+  const { advanced, updateAdvanced } = store;
   const [isCopied, setIsCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  const txt = evCalcTranslations[language] || evCalcTranslations.en;
-  const result = calculateEv(consumption, mileage, baselineKwh, petrolRm, mode, advanced.chargingLoss, advanced.publicDcRate);
+  const txt = evCalcTranslations[store.language] || evCalcTranslations.en;
+  const metrics = calculateAllEvMetrics({
+    modelName: store.modelName,
+    consumptionKwhPer100Km: store.consumption,
+    motorPowerKw: store.motorKw,
+    batteryCapacityKwh: store.batteryKwh,
+    monthlyMileageKm: store.mileage,
+    baselineHomeKwh: store.baselineKwh,
+    baselineHomeBillRm: 0,
+    fatherPetrolCostRm: store.petrolRm,
+    petrolEngineCc: store.petrolEngineCc || 1500,
+    chargingMode: store.mode === 'mixed' ? 'mixed' : 'home_only',
+    petrolPricePerLiter: store.advanced.petrolPrice,
+    petrolFuelEfficiencyKmPerL: store.advanced.fuelEconomy,
+    chargingEfficiency: 1 - store.advanced.chargingLoss,
+    homeChargingRatio: store.mode === 'mixed' ? 0.9 : 1.0,
+    publicDcPricePerKwh: store.advanced.publicDcRate,
+    afaRateSen: 3.80,
+    isTouEnabled: store.advanced.touEnabled,
+    touOffPeakRateSen: 28.0
+  });
 
   const reportText = txt.reportSummary
-    .replace('{consumption}', consumption.toString())
-    .replace('{mileage}', mileage.toString())
-    .replace('{petrol}', petrolRm.toString())
-    .replace('{savings}', result.monthlyNetSavings.toFixed(2))
-    .replace('{evCost}', (result.marginalCost + result.publicCost).toFixed(2));
+    .replace('{model}', store.modelName)
+    .replace('{consumption}', store.consumption.toFixed(1))
+    .replace('{mileage}', store.mileage.toString())
+    .replace('{petrol}', store.petrolRm.toFixed(2))
+    .replace('{savings}', metrics.monthlyNetSavings.toFixed(2))
+    .replace('{evCost}', metrics.totalEvChargingCost.toFixed(2))
+    .replace('{tcoSavings}', metrics.fiveYearTcoWithRoadTaxSavings.toFixed(0));
 
   const handleCopy = () => {
     navigator.clipboard.writeText(reportText);

@@ -86,9 +86,9 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     langToggle: 'ZH',
 
     // Cockpit
-    evJourneyTitle: 'Your EV & Commute',
+    evJourneyTitle: 'EV & Commute',
     consumptionLabel: 'Energy Consumption (kWh/100km)',
-    monthlyMileageTitle: 'Monthly Commute Distance',
+    monthlyMileageTitle: 'Monthly Distance',
     mileageUnit: 'km',
     homeElectricityTitle: 'Home Electricity',
     kwhUnit: 'kWh',
@@ -98,7 +98,7 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     calculateBtn: 'Calculate Savings',
 
     // Results
-    verdictTitle: 'Financial Verdict',
+    verdictTitle: 'Cost Analysis',
     monthlyNetSavings: 'Monthly Net Savings',
     oneYear: '1-Year Net',
     fiveYear: '5-Year Fuel',
@@ -107,13 +107,13 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
 
     // Waterfall
     oldPetrolSpend: 'Current Petrol Spend',
-    marginalHomeElec: '- Marginal Home Electricity',
-    publicDcCost: '- Public DC Charging',
-    totalEvCharging: '= Total EV Charging Cost',
+    marginalHomeElec: '- Added Home Electricity (TNB)',
+    publicDcCost: '- Public DC Fast Charging',
+    totalEvCharging: '= Total EV Monthly Spend',
 
     // Anchors
-    seeComparator: 'See Car Comparison ↓',
-    seeTnbAudit: 'See TNB Bill Audit ↓',
+    seeComparator: 'Compare Cars ↓',
+    seeTnbAudit: 'TNB Bill Breakdown ↓',
 
     // Comparator
     comparatorTitle: 'Car Comparison',
@@ -128,33 +128,33 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     tieTag: 'Equal 5-year cost',
 
     // Road Tax & TCO
-    roadTaxSectionTitle: '2026 JPJ Road Tax Benchmark',
-    roadTaxSub: 'From 2026, Malaysia EV road tax is kW-rated; benchmarked against private ICE displacement.',
+    roadTaxSectionTitle: '2026 Malaysia Road Tax',
+    roadTaxSub: 'From 2026, EV road tax is rated by motor output (kW). Compare below with standard ICE displacement.',
     roadTaxEvLabel: '2026 EV Road Tax',
-    roadTaxIceLabel: 'Benchmark ICE Tax',
-    roadTaxIceCcSelect: 'ICE displacement',
-    annualDiff: 'Annual Road Tax Delta',
-    fiveYearTcoAdvantage: '5-Year Net TCO Advantage',
+    roadTaxIceLabel: 'Benchmark Petrol Tax',
+    roadTaxIceCcSelect: 'Compare with petrol displacement',
+    annualDiff: 'Annual Road Tax Difference',
+    fiveYearTcoAdvantage: '5-Year Total (Fuel + Road Tax)',
     perYearUnit: '/ yr',
     perMonthUnit: '/ mo',
 
     // TNB Audit
-    tnbAuditTitle: 'Real TNB Bill Breakdown',
-    thresholdWarning: 'Monthly usage crosses 600 kWh. TNB retail charges and AFA fuel surcharge now apply.',
+    tnbAuditTitle: 'TNB Bill Breakdown',
+    thresholdWarning: 'Monthly usage crosses 600 kWh threshold. Higher TNB tier and 8% SST apply.',
     tableItem: 'Item',
     tableBaseline: 'Before EV',
     tableNew: 'With EV',
     tableDelta: 'Difference',
     baseGen: 'Base Energy & Network',
     sstTax: 'Service Tax SST (8%)',
-    kwtbb: 'Renewable Fund (KWTBB)',
+    kwtbb: 'Renewable Fund (KWTBB 1.6%)',
     totalRm: 'Total Monthly Bill (RM)',
 
     // Advanced Drawer
     advancedSettings: 'Advanced Parameters',
     petrolPriceLabel: 'Petrol price per litre',
-    fuelEconomyLabel: 'Fuel economy (km/L)',
-    chargingLossLabel: 'Charging loss (%)',
+    fuelEconomyLabel: 'Current fuel economy (km/L)',
+    chargingLossLabel: 'Home charging loss (%)',
     publicDcRateLabel: 'Public DC rate (RM/kWh)',
     shareReportTitle: 'Share Breakdown',
     copyReport: 'Copy Summary',
@@ -174,73 +174,73 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     homeElectricityTitle: '家里每月用电',
     kwhUnit: 'kWh',
     kwhRmToggle: 'kWh ↔ RM',
-    monthlyPetrolTitle: '原车每月油费',
+    monthlyPetrolTitle: '目前每月油费',
     currencyUnit: 'RM',
     calculateBtn: '开始测算',
 
     // Results
     verdictTitle: '测算结果',
     monthlyNetSavings: '每月净省',
-    oneYear: '1年累计',
-    fiveYear: '5年油电省',
-    tco: '5年总净省',
-    inclRoadTax: '含5年路税差',
+    oneYear: '1 年累计',
+    fiveYear: '5 年油电差',
+    tco: '5 年综合净省',
+    inclRoadTax: '含路税差额',
 
     // Waterfall
-    oldPetrolSpend: '原车每月油费',
+    oldPetrolSpend: '目前每月油费',
     marginalHomeElec: '− 家充新增电费 (TNB)',
-    publicDcCost: '− 商业快充费用',
-    totalEvCharging: '＝ 电车每月充电总开销',
+    publicDcCost: '− 公共快充费用',
+    totalEvCharging: '＝ 电车每月总花费',
 
     // Anchors
-    seeComparator: '查看两车对比 ↓',
-    seeTnbAudit: '查看 TNB 账单明细 ↓',
+    seeComparator: '对比其他车型 ↓',
+    seeTnbAudit: 'TNB 电费明细 ↓',
 
     // Comparator
     comparatorTitle: '车型对比',
-    carA: '当前车型',
-    activeInputs: '已选',
+    carA: '当前选定',
+    activeInputs: '当前测算',
     motorKw: '电机功率',
     batteryKwh: '电池容量',
     cost100km: '百公里花费',
     monthlyEvCost: '每月充电费',
     fiveYearEnergySavings: '5年油电差额',
     winnerTag: '{car} 5年多省 RM {amount}',
-    tieTag: '两车5年成本相当',
+    tieTag: '两车5年开销相当',
 
     // Road Tax & TCO
-    roadTaxSectionTitle: '2026 JPJ 电车路税对比',
-    roadTaxSub: '2026年起纯电按电机输出功率（kW）计税；此处对比汽油车排量税率。',
+    roadTaxSectionTitle: '2026 大马路税明细',
+    roadTaxSub: '2026 年起纯电按电机输出（kW）分档计税；下方对比常见汽油车排量税率。',
     roadTaxEvLabel: '2026 纯电路税',
     roadTaxIceLabel: '参考油车路税',
-    roadTaxIceCcSelect: '参考油车排量',
-    annualDiff: '路税年差额',
+    roadTaxIceCcSelect: '对比汽油车排量',
+    annualDiff: '每年路税差额',
     fiveYearTcoAdvantage: '5年综合总省 (含路税)',
     perYearUnit: '/ 年',
     perMonthUnit: '/ 月',
 
     // TNB Audit
     tnbAuditTitle: 'TNB 真实账单拆解',
-    thresholdWarning: '月用电跨过 600 kWh 门槛。TNB 将计收零售服务费与 AFA 燃油浮动费。',
+    thresholdWarning: '全屋月用电超过 600 kWh 门槛，进入更高费率档位并加征 8% SST 服务税。',
     tableItem: '账单项目',
-    tableBaseline: '买车前',
-    tableNew: '买车后',
+    tableBaseline: '购车前',
+    tableNew: '购车后',
     tableDelta: '增量',
     baseGen: '基础电费与电网费',
     sstTax: '服务税 SST (8%)',
-    kwtbb: '绿色能源基金 KWTBB',
-    totalRm: '实付总电费 (RM)',
+    kwtbb: '绿色能源基金 (1.6%)',
+    totalRm: '实付电费总额 (RM)',
 
     // Advanced Drawer
     advancedSettings: '高级参数设置',
     petrolPriceLabel: '汽油单价 (RM/L)',
-    fuelEconomyLabel: '燃油经济性 (km/L)',
-    chargingLossLabel: '交流充电损耗 (%)',
-    publicDcRateLabel: '商业直流快充单价 (RM/kWh)',
-    shareReportTitle: '分享精算报告',
-    copyReport: '复制文本摘要',
+    fuelEconomyLabel: '原车油耗 (km/L)',
+    chargingLossLabel: '家充损耗率 (%)',
+    publicDcRateLabel: '公共快充单价 (RM/kWh)',
+    shareReportTitle: '分享测算结果',
+    copyReport: '复制摘要',
     copied: '已复制到剪贴板！',
-    shareWhatsApp: '通过 WhatsApp 发送',
-    reportSummary: 'EV Calc MY 试驾精算摘要\n\n车型: {model}\n电耗: {consumption} kWh/100km\n月度里程: {mileage} km/月\n原油费: RM {petrol}/月\n\n每月净省: RM {savings}\n电车月充电费: RM {evCost}\n5年综合总省 (含2026路税): RM {tcoSavings}'
+    shareWhatsApp: 'WhatsApp 发送',
+    reportSummary: 'EV Calc MY 测算摘要\n\n车型: {model}\n百公里电耗: {consumption} kWh/100km\n每月里程: {mileage} km\n原车油费: RM {petrol}/月\n\n每月净省: RM {savings}\n电车月充电费: RM {evCost}\n5年综合总省 (含2026路税): RM {tcoSavings}'
   }
 };

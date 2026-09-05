@@ -63,11 +63,13 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
   const resultA = useMemo(() => calculateAllEvMetrics(inputsA), [inputsA]);
 
-  // Comparator candidate Car B
+  // Comparator candidate Car B (ensure Car B does not default to identical Car A)
   const comparatorVehicle = useMemo(() => {
-    return PRESETS.find(p => p.id === selectedComparatorId) ||
-      PRESETS.find(p => p.id !== store.selectedPresetId) ||
-      PRESETS[1];
+    if (selectedComparatorId && selectedComparatorId !== store.selectedPresetId) {
+      const match = PRESETS.find(p => p.id === selectedComparatorId);
+      if (match) return match;
+    }
+    return PRESETS.find(p => p.id !== store.selectedPresetId) || PRESETS[0];
   }, [selectedComparatorId, store.selectedPresetId]);
 
   const inputsB = useMemo<UserInputs>(() => ({
@@ -208,14 +210,17 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
         <section id="comparator" className="space-y-stack-md">
            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
              <h2 className="text-h3 text-text-primary font-semibold whitespace-nowrap">{txt.comparatorTitle}</h2>
-             {fiveYearTcoDiff !== 0 && (
-               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full text-caption text-brand-primary font-semibold shadow-sm w-fit whitespace-nowrap">
+             {fiveYearTcoDiff !== 0 ? (
+               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full text-caption text-brand-primary font-semibold shadow-sm max-w-full">
                  <Sparkles size={13} className="shrink-0" />
-                 <span>
-                   {fiveYearTcoDiff > 0
-                     ? txt.winnerTag.replace('{car}', store.modelName).replace('{amount}', Math.abs(fiveYearTcoDiff).toFixed(0))
-                     : txt.winnerTag.replace('{car}', comparatorVehicle.name).replace('{amount}', Math.abs(fiveYearTcoDiff).toFixed(0))}
-                 </span>
+                 <div className="truncate whitespace-nowrap">
+                   <span className="font-bold">{fiveYearTcoDiff > 0 ? store.modelName : comparatorVehicle.name}</span>
+                   <span> {store.language === 'zh' ? `5年更省 RM ${Math.abs(fiveYearTcoDiff).toFixed(0)}` : `saves RM ${Math.abs(fiveYearTcoDiff).toFixed(0)} more (5-yr)`}</span>
+                 </div>
+               </div>
+             ) : (
+               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-overlay border border-border-subtle rounded-full text-caption text-text-secondary font-medium w-fit whitespace-nowrap">
+                 <span>{txt.tieTag}</span>
                </div>
              )}
            </div>
@@ -283,11 +288,11 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
                </div>
                <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
                  <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.roadTaxEvLabel}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
-                    RM {resultA.evRoadTaxAnnualRm} {txt.perYearUnit}
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap text-caption sm:text-body">
+                    RM {resultA.evRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
                  </div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
-                    RM {resultB.evRoadTaxAnnualRm} {txt.perYearUnit}
+                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap text-caption sm:text-body">
+                    RM {resultB.evRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
                  </div>
                </div>
              </div>

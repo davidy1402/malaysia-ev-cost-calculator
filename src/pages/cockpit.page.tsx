@@ -139,9 +139,9 @@ export default function CockpitPage({ onCalculate = () => {} }: { onCalculate?: 
 
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base flex justify-between items-center">
              <div>
-               <div className="text-caption text-text-secondary flex items-center gap-1.5">
-                 <span>{txt.homeElectricityTitle}</span>
-                 <span className="text-[11px] text-text-secondary/70 font-mono">
+               <div className="text-caption text-text-secondary flex items-center gap-1.5 flex-wrap">
+                 <span className="whitespace-nowrap">{txt.homeElectricityTitle}</span>
+                 <span className="text-[11px] text-text-secondary/70 font-mono whitespace-nowrap">
                    {homeDisplayMode === 'kwh'
                      ? `(≈ RM ${currentTnbBill.totalAmount.toFixed(2)} / ${language === 'zh' ? '月' : 'mo'})`
                      : `(≈ ${baselineKwh} kWh / ${language === 'zh' ? '月' : 'mo'})`}
