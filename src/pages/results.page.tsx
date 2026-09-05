@@ -406,24 +406,34 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
                </div>
              </div>
 
-             {/* Side by Side Tax comparison */}
-             <div className="grid grid-cols-2 gap-3 pt-1">
-               <div className="bg-surface-overlay border border-border-subtle rounded-lg p-3 text-center">
-                 <div className="text-[11px] text-text-secondary whitespace-nowrap">{txt.roadTaxEvLabel} ({store.motorKw} kW)</div>
-                 <div className="text-h2 font-display font-bold text-text-primary mt-1 tabular-nums whitespace-nowrap">
-                   RM {resultA.evRoadTaxAnnualRm}
-                 </div>
-                 <div className="text-[10px] text-text-secondary whitespace-nowrap">{txt.perYearUnit}</div>
-               </div>
+              {/* Side by Side Tax comparison */}
+              <div className="grid grid-cols-2 gap-2.5 pt-1">
+                <div className="bg-surface-overlay border border-border-subtle rounded-lg p-3 text-center flex flex-col justify-between">
+                  <div>
+                    <div className="text-[11px] text-text-secondary font-medium leading-tight">{txt.roadTaxEvLabel}</div>
+                    <div className="text-[10px] text-text-secondary/70 font-mono mt-0.5">({store.motorKw} kW)</div>
+                  </div>
+                  <div className="mt-2 flex items-baseline justify-center">
+                    <span className="text-h2 font-display font-bold text-text-primary tabular-nums">
+                      RM {resultA.evRoadTaxAnnualRm}
+                    </span>
+                    <span className="text-[10px] text-text-secondary ml-1">{txt.perYearUnit}</span>
+                  </div>
+                </div>
 
-               <div className="bg-surface-overlay border border-border-subtle rounded-lg p-3 text-center">
-                 <div className="text-[11px] text-text-secondary whitespace-nowrap">{txt.roadTaxIceLabel} ({store.petrolEngineCc || 1500} cc)</div>
-                 <div className="text-h2 font-display font-bold text-text-primary mt-1 tabular-nums whitespace-nowrap">
-                   RM {resultA.petrolRoadTaxAnnualRm}
-                 </div>
-                 <div className="text-[10px] text-text-secondary whitespace-nowrap">{txt.perYearUnit}</div>
-               </div>
-             </div>
+                <div className="bg-surface-overlay border border-border-subtle rounded-lg p-3 text-center flex flex-col justify-between">
+                  <div>
+                    <div className="text-[11px] text-text-secondary font-medium leading-tight">{txt.roadTaxIceLabel}</div>
+                    <div className="text-[10px] text-text-secondary/70 font-mono mt-0.5">({store.petrolEngineCc || 1500} cc)</div>
+                  </div>
+                  <div className="mt-2 flex items-baseline justify-center">
+                    <span className="text-h2 font-display font-bold text-text-primary tabular-nums">
+                      RM {resultA.petrolRoadTaxAnnualRm}
+                    </span>
+                    <span className="text-[10px] text-text-secondary ml-1">{txt.perYearUnit}</span>
+                  </div>
+                </div>
+              </div>
 
              {/* Summary Delta Banner */}
              <div className="p-3 bg-surface-overlay/80 border border-border-subtle rounded-lg flex justify-between items-center text-body gap-2">

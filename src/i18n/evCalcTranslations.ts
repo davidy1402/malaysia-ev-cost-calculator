@@ -145,7 +145,7 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     roadTaxSectionTitle: '2026 Malaysia Road Tax',
     roadTaxSub: 'From 2026, EV road tax is rated by motor output (kW). Compare below with standard ICE displacement.',
     roadTaxEvLabel: '2026 EV Road Tax',
-    roadTaxIceLabel: 'Benchmark Petrol Tax',
+    roadTaxIceLabel: 'Petrol Road Tax',
     roadTaxIceCcSelect: 'Compare with petrol displacement',
     annualDiff: 'Annual Road Tax Difference',
     fiveYearTcoAdvantage: '5-Year Total (Fuel + Road Tax)',
