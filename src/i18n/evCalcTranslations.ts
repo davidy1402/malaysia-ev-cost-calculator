@@ -34,6 +34,9 @@ export interface AppTranslations {
 
   // Comparator
   comparatorTitle: string;
+  comparatorSub: string;
+  currentIceCar: string;
+  baselineTag: string;
   carA: string;
   activeInputs: string;
   motorKw: string;
@@ -41,6 +44,7 @@ export interface AppTranslations {
   cost100km: string;
   monthlyEvCost: string;
   fiveYearEnergySavings: string;
+  fiveYearTotalCost: string;
   winnerTag: string;
   tieTag: string;
 
@@ -116,14 +120,18 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     seeTnbAudit: 'TNB Bill Breakdown ↓',
 
     // Comparator
-    comparatorTitle: 'Car Comparison',
-    carA: 'Current Car',
-    activeInputs: 'Active',
-    motorKw: 'Motor Output',
-    batteryKwh: 'Battery Size',
+    comparatorTitle: '3-Way Comparison',
+    comparatorSub: 'Current Petrol Car vs Selected EV vs Alternative EV (5-Year Horizon)',
+    currentIceCar: 'Current Petrol',
+    baselineTag: 'Baseline',
+    carA: 'Selected EV',
+    activeInputs: 'Selected',
+    motorKw: 'Power / Engine',
+    batteryKwh: 'Battery / Fuel',
     cost100km: 'Cost / 100km',
-    monthlyEvCost: 'Monthly Charging',
-    fiveYearEnergySavings: '5-Yr Fuel Savings',
+    monthlyEvCost: 'Monthly Energy',
+    fiveYearEnergySavings: '5-Yr vs Petrol',
+    fiveYearTotalCost: '5-Yr Total Spend',
     winnerTag: '{car} saves RM {amount} more (5-yr)',
     tieTag: 'Equal 5-year cost',
 
@@ -197,14 +205,18 @@ export const evCalcTranslations: Record<'en' | 'zh', AppTranslations> = {
     seeTnbAudit: 'TNB 电费明细 ↓',
 
     // Comparator
-    comparatorTitle: '车型对比',
-    carA: '当前选定',
+    comparatorTitle: '三车横向对比',
+    comparatorSub: '现款油车 vs 已选电车 vs 候选电车（5 年开销全景对照）',
+    currentIceCar: '目前油车',
+    baselineTag: '基准参照',
+    carA: '已选电车',
     activeInputs: '当前测算',
-    motorKw: '电机功率',
+    motorKw: '动力规格',
     batteryKwh: '电池容量',
     cost100km: '百公里花费',
-    monthlyEvCost: '每月充电费',
-    fiveYearEnergySavings: '5年油电差额',
+    monthlyEvCost: '每月能源花费',
+    fiveYearEnergySavings: '5 年相比油车',
+    fiveYearTotalCost: '5 年总开销 (油电+税)',
     winnerTag: '{car} 5年多省 RM {amount}',
     tieTag: '两车5年开销相当',
 

@@ -84,6 +84,10 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
   const isPositive = resultA.monthlyNetSavings >= 0;
   const fiveYearTcoDiff = Math.round((resultA.fiveYearTcoWithRoadTaxSavings - resultB.fiveYearTcoWithRoadTaxSavings) * 100) / 100;
+  const petrolCost100Km = store.mileage > 0 ? (store.petrolRm / store.mileage) * 100 : 0;
+  const petrol5YrSpend = (store.petrolRm * 60) + (resultA.petrolRoadTaxAnnualRm * 5);
+  const evA5YrSpend = (resultA.totalEvChargingCost * 60) + (resultA.evRoadTaxAnnualRm * 5);
+  const evB5YrSpend = (resultB.totalEvChargingCost * 60) + (resultB.evRoadTaxAnnualRm * 5);
 
   const generateReportText = () => {
     return txt.reportSummary
@@ -206,16 +210,19 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
            </div>
         </section>
 
-        {/* Section 2: Comparator */}
+        {/* Section 2: 3-Way Comparator */}
         <section id="comparator" className="space-y-stack-md">
            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-             <h2 className="text-h3 text-text-primary font-semibold whitespace-nowrap">{txt.comparatorTitle}</h2>
+             <div>
+               <h2 className="text-h3 text-text-primary font-semibold whitespace-nowrap">{txt.comparatorTitle}</h2>
+               <p className="text-caption text-text-secondary mt-0.5">{txt.comparatorSub}</p>
+             </div>
              {fiveYearTcoDiff !== 0 ? (
                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 rounded-full text-caption text-brand-primary font-semibold shadow-sm max-w-full">
                  <Sparkles size={13} className="shrink-0" />
                  <div className="truncate whitespace-nowrap">
                    <span className="font-bold">{fiveYearTcoDiff > 0 ? store.modelName : comparatorVehicle.name}</span>
-                   <span> {store.language === 'zh' ? `5年更省 RM ${Math.abs(fiveYearTcoDiff).toFixed(0)}` : `saves RM ${Math.abs(fiveYearTcoDiff).toFixed(0)} more (5-yr)`}</span>
+                   <span> {store.language === 'zh' ? `比另一款 5 年更省 RM ${Math.abs(fiveYearTcoDiff).toFixed(0)}` : `saves RM ${Math.abs(fiveYearTcoDiff).toFixed(0)} more (5-yr)`}</span>
                  </div>
                </div>
              ) : (
@@ -227,73 +234,139 @@ export default function ResultsPage({ onBack = () => {} }: { onBack?: () => void
 
            <div className="bg-surface-base border border-border-subtle rounded-xl p-base overflow-hidden">
              
-             <div className="grid grid-cols-[1.1fr_1fr_1fr] gap-2 text-caption text-text-secondary mb-3 items-center">
-               <div></div>
-               <div className="text-center p-2 bg-surface-overlay rounded border border-border-subtle overflow-hidden">
-                 <span className="font-bold text-text-primary block truncate whitespace-nowrap">{store.modelName}</span>
-                 <span className="text-brand-accent text-[11px] font-medium whitespace-nowrap">{txt.activeInputs}</span>
-               </div>
-               <div className="overflow-hidden">
-                  <select 
-                    value={comparatorVehicle.id}
-                    onChange={e => setSelectedComparatorId(e.target.value)}
-                    className="w-full p-2 bg-surface-overlay border border-border-subtle rounded text-center text-text-primary appearance-none outline-none font-medium cursor-pointer truncate"
-                  >
-                    {PRESETS.map(p => (
-                      <option key={p.id} value={p.id} className="bg-surface-base text-text-primary">
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-               </div>
-             </div>
+             {/* Horizontal scroll container for mobile narrow viewports */}
+             <div className="overflow-x-auto -mx-base px-base pb-1">
+               <div className="min-w-[430px]">
+                 
+                 {/* Table Header: 3 Vehicles */}
+                 <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] gap-2 text-caption text-text-secondary mb-3 items-stretch">
+                   <div className="flex items-end pb-2">
+                     <span className="text-[11px] text-text-secondary/70 uppercase tracking-wider">{store.language === 'zh' ? '项目' : 'Item'}</span>
+                   </div>
+                   
+                   {/* Col 1: Current Petrol Car */}
+                   <div className="text-center p-2 bg-surface-overlay/70 rounded border border-border-subtle flex flex-col justify-center">
+                     <span className="font-bold text-text-primary block truncate whitespace-nowrap">{txt.currentIceCar}</span>
+                     <span className="text-[11px] text-text-secondary font-medium whitespace-nowrap">({store.petrolEngineCc || 1500}cc · {txt.baselineTag})</span>
+                   </div>
 
-             <div className="space-y-0 divide-y divide-border-subtle">
-               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
-                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.motorKw}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{store.motorKw} kW</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{comparatorVehicle.motorKw} kW</div>
-               </div>
-               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
-                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.batteryKwh}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{store.batteryKwh} kWh</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{comparatorVehicle.batteryKwh} kWh</div>
-               </div>
-               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
-                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.cost100km}</div>
-                 <div className="text-center font-display tabular-nums font-semibold text-text-primary whitespace-nowrap">
-                    RM {resultA.evCostPer100Km.toFixed(2)}
+                   {/* Col 2: Selected EV A */}
+                   <div className="text-center p-2 bg-brand-primary/10 rounded border border-brand-primary/40 flex flex-col justify-center shadow-xs">
+                     <span className="font-bold text-brand-primary block truncate whitespace-nowrap">{store.modelName}</span>
+                     <span className="text-brand-accent text-[11px] font-medium whitespace-nowrap">{txt.activeInputs}</span>
+                   </div>
+
+                   {/* Col 3: Candidate EV B */}
+                   <div className="flex flex-col justify-center">
+                      <select 
+                        value={comparatorVehicle.id}
+                        onChange={e => setSelectedComparatorId(e.target.value)}
+                        className="w-full h-full p-2 bg-surface-overlay border border-border-subtle rounded text-center text-text-primary appearance-none outline-none font-medium cursor-pointer truncate hover:border-brand-primary transition-colors text-caption"
+                      >
+                        {PRESETS.map(p => (
+                          <option key={p.id} value={p.id} className="bg-surface-base text-text-primary">
+                            {p.name}
+                          </option>
+                        ))}
+                      </select>
+                   </div>
                  </div>
-                 <div className="text-center font-display tabular-nums font-semibold text-text-primary whitespace-nowrap">
-                    RM {resultB.evCostPer100Km.toFixed(2)}
+
+                 {/* Comparison Rows */}
+                 <div className="space-y-0 divide-y divide-border-subtle text-caption sm:text-body">
+                   
+                   {/* Row: Motor / Spec */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2">
+                     <div className="text-text-secondary whitespace-nowrap truncate">{txt.motorKw}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">{store.petrolEngineCc || 1500} cc</div>
+                     <div className="text-center font-display tabular-nums text-brand-primary font-medium whitespace-nowrap">{store.motorKw} kW</div>
+                     <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{comparatorVehicle.motorKw} kW</div>
+                   </div>
+
+                   {/* Row: Battery / Capacity */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2">
+                     <div className="text-text-secondary whitespace-nowrap truncate">{txt.batteryKwh}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">-</div>
+                     <div className="text-center font-display tabular-nums text-brand-primary font-medium whitespace-nowrap">{store.batteryKwh} kWh</div>
+                     <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">{comparatorVehicle.batteryKwh} kWh</div>
+                   </div>
+
+                   {/* Row: Cost per 100km */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2">
+                     <div className="text-text-secondary whitespace-nowrap truncate">{txt.cost100km}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">
+                       RM {petrolCost100Km.toFixed(2)}
+                     </div>
+                     <div className="text-center font-display tabular-nums font-semibold text-brand-primary whitespace-nowrap">
+                       RM {resultA.evCostPer100Km.toFixed(2)}
+                     </div>
+                     <div className="text-center font-display tabular-nums font-semibold text-text-primary whitespace-nowrap">
+                       RM {resultB.evCostPer100Km.toFixed(2)}
+                     </div>
+                   </div>
+
+                   {/* Row: Monthly Energy */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2">
+                     <div className="text-text-secondary whitespace-nowrap truncate">{txt.monthlyEvCost}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">
+                       RM {store.petrolRm.toFixed(2)}
+                     </div>
+                     <div className="text-center font-display tabular-nums font-semibold text-brand-primary whitespace-nowrap">
+                       RM {resultA.totalEvChargingCost.toFixed(2)}
+                     </div>
+                     <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
+                       RM {resultB.totalEvChargingCost.toFixed(2)}
+                     </div>
+                   </div>
+
+                   {/* Row: Road Tax */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2">
+                     <div className="text-text-secondary whitespace-nowrap truncate">{txt.roadTaxEvLabel}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">
+                       RM {resultA.petrolRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
+                     </div>
+                     <div className="text-center font-display tabular-nums font-medium text-brand-primary whitespace-nowrap">
+                       RM {resultA.evRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
+                     </div>
+                     <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
+                       RM {resultB.evRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
+                     </div>
+                   </div>
+
+                   {/* Row: 5-Yr Total Spend (Fuel + Road Tax) */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2 bg-surface-overlay/30 -mx-base px-base rounded">
+                     <div className="text-text-primary font-medium whitespace-nowrap truncate">{txt.fiveYearTotalCost}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">
+                       RM {petrol5YrSpend.toFixed(0)}
+                     </div>
+                     <div className="text-center font-display tabular-nums font-bold text-brand-primary whitespace-nowrap">
+                       RM {evA5YrSpend.toFixed(0)}
+                     </div>
+                     <div className="text-center font-display tabular-nums font-semibold text-text-primary whitespace-nowrap">
+                       RM {evB5YrSpend.toFixed(0)}
+                     </div>
+                   </div>
+
+                   {/* Row: 5-Yr Savings vs Petrol */}
+                   <div className="grid grid-cols-[1.1fr_1fr_1.1fr_1.1fr] py-2.5 items-center gap-2">
+                     <div className="text-text-primary font-semibold whitespace-nowrap truncate">{txt.fiveYearEnergySavings}</div>
+                     <div className="text-center font-display tabular-nums text-text-secondary whitespace-nowrap">
+                       {txt.baselineTag}
+                     </div>
+                     <div className={`text-center font-display tabular-nums font-bold whitespace-nowrap ${
+                       resultA.fiveYearTcoWithRoadTaxSavings >= 0 ? 'text-status-positive' : 'text-status-warning'
+                     }`}>
+                       {resultA.fiveYearTcoWithRoadTaxSavings >= 0 ? '+' : ''}RM {resultA.fiveYearTcoWithRoadTaxSavings.toFixed(0)}
+                     </div>
+                     <div className={`text-center font-display tabular-nums font-bold whitespace-nowrap ${
+                       resultB.fiveYearTcoWithRoadTaxSavings >= 0 ? 'text-status-positive' : 'text-status-warning'
+                     }`}>
+                       {resultB.fiveYearTcoWithRoadTaxSavings >= 0 ? '+' : ''}RM {resultB.fiveYearTcoWithRoadTaxSavings.toFixed(0)}
+                     </div>
+                   </div>
+
                  </div>
-               </div>
-               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
-                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.monthlyEvCost}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
-                    RM {resultA.totalEvChargingCost.toFixed(2)}
-                 </div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap">
-                    RM {resultB.totalEvChargingCost.toFixed(2)}
-                 </div>
-               </div>
-               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
-                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.fiveYearEnergySavings}</div>
-                 <div className="text-center font-display tabular-nums font-bold text-status-positive whitespace-nowrap">
-                    RM {resultA.fiveYearNetSavings.toFixed(0)}
-                 </div>
-                 <div className="text-center font-display tabular-nums font-bold text-status-positive whitespace-nowrap">
-                    RM {resultB.fiveYearNetSavings.toFixed(0)}
-                 </div>
-               </div>
-               <div className="grid grid-cols-[1.1fr_1fr_1fr] py-2.5 text-body items-center gap-1">
-                 <div className="text-text-secondary text-caption sm:text-body whitespace-nowrap truncate">{txt.roadTaxEvLabel}</div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap text-caption sm:text-body">
-                    RM {resultA.evRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
-                 </div>
-                 <div className="text-center font-display tabular-nums text-text-primary whitespace-nowrap text-caption sm:text-body">
-                    RM {resultB.evRoadTaxAnnualRm} <span className="text-[10px] text-text-secondary">{txt.perYearUnit}</span>
-                 </div>
+
                </div>
              </div>
 
